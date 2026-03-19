@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141b2d;
+    --surface: #1a2235;
+    --surface2: #202c42;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8edf5;
+    --muted: #6b7a99;
+    --muted2: #8a9bbf;
+    --accent: #4f7fff;
+    --accent2: #6b96ff;
+    --accent-glow: rgba(79,127,255,0.15);
+    --green: #2dd4a0;
+    --green-dim: rgba(45,212,160,0.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── Background grid ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,127,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,127,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── Sections ── */
+  section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* ── Hero ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    max-width: 100%;
+  }
+
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 32px;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent2);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  h1 .line2 {
+    display: block;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  h1 .accent { color: var(--accent2); }
+
+  .hero-desc {
+    max-width: 540px;
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--muted2);
+    line-height: 1.75;
+    margin-bottom: 48px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--muted2);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    transition: color 0.2s, border-color 0.2s, transform 0.15s;
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 72px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-val {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Section headings ── */
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 1px;
+    background: var(--muted);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text);
+    margin-bottom: 48px;
+    line-height: 1.1;
+  }
+
+  /* ── Certs section ── */
+  #certs { padding-top: 120px; padding-bottom: 80px; }
+
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .cert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .cert-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--stripe, var(--accent));
+  }
+
+  .cert-card.earned { --stripe: var(--green); }
+  .cert-card.in-progress { --stripe: var(--amber); }
+  .cert-card.planned { --stripe: var(--muted); }
+
+  .cert-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .cert-code {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .cert-badge {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .badge-earned { background: var(--green-dim); color: var(--green); }
+  .badge-progress { background: var(--amber-dim); color: var(--amber); }
+  .badge-planned { background: rgba(107,122,153,0.15); color: var(--muted2); }
+
+  .cert-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted2);
+    margin-bottom: 16px;
+  }
+
+  .cert-bar-wrap {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .cert-bar {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--fill, var(--muted));
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .cert-card.earned .cert-bar { --fill: var(--green); }
+  .cert-card.in-progress .cert-bar { --fill: var(--amber); }
+
+  .cert-progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ── Skills section ── */
+  #skills { padding-top: 80px; padding-bottom: 80px; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .skill-card:hover { border-color: var(--border2); }
+
+  .skill-icon {
+    font-size: 24px;
+    margin-bottom: 14px;
+    line-height: 1;
+  }
+
+  .skill-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .skill-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted2);
+  }
+
+  /* ── Lab section ── */
+  #lab { padding-top: 80px; padding-bottom: 80px; }
+
+  .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .lab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .lab-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-3px);
+  }
+
+  .lab-card-header {
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .lab-card-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .lab-card-sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .lab-difficulty {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .diff-beginner { background: var(--green-dim); color: var(--green); }
+  .diff-intermediate { background: var(--amber-dim); color: var(--amber); }
+  .diff-advanced { background: rgba(99,150,255,0.12); color: var(--accent2); }
+
+  .lab-card-body {
+    padding: 20px 24px;
+  }
+
+  .lab-card-desc {
+    font-size: 14px;
+    color: var(--muted2);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .lab-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .lab-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .dot-green { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .dot-amber { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+  .dot-blue  { width: 7px; height: 7px; border-radius: 50%; background: var(--accent2); flex-shrink: 0; }
+
+  /* ── About ── */
+  #about { padding-top: 80px; padding-bottom: 140px; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--muted2);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .about-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .meta-key { color: var(--muted); font-weight: 400; }
+  .meta-val { color: var(--text); font-weight: 500; }
+
+  /* ── Footer ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-text {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    animation: fadeUp 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .hero-inner, section { padding: 0 24px; }
+    h1 { font-size: 42px; letter-spacing: -1px; }
+    .hero-stats { gap: 28px; flex-wrap: wrap; }
+    .about-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Karsten<span>Skåla Ek</span>.no</div>
+  <ul class="nav-links">
+    <li><a href="#certs">Sertifiseringer</a></li>
+    <li><a href="#skills">Kompetanse</a></li>
+    <li><a href="#lab">Lab-prosjekter</a></li>
+    <li><a href="#about">Om meg</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-inner">
+    <div class="hero-label fade-up">Microsoft Cloud Engineer</div>
+    <h1 class="fade-up delay-1">
+      Karsten S. Ek
+      <span class="line2">Skyarkitekt &<br><span class="accent">IT-infrastruktur</span></span>
+    </h1>
+    <p class="hero-desc fade-up delay-2">
+      IT-drifter med 3 års erfaring fra norsk offentlig sektor. Jobber daglig med Microsoft 365 E5, Entra ID og Azure — og dokumenterer labmiljøet mitt her.
+    </p>
+    <div class="hero-ctas fade-up delay-3">
+      <a href="#lab" class="btn-primary">Se lab-prosjekter →</a>
+      <a href="#certs" class="btn-ghost">Sertifiseringer</a>
+    </div>
+    <div class="hero-stats fade-up delay-4">
+      <div>
+        <div class="stat-val">350</div>
+        <div class="stat-label">Brukere i produksjon</div>
+      </div>
+      <div>
+        <div class="stat-val">E5</div>
+        <div class="stat-label">Microsoft 365 lisensnivå</div>
+      </div>
+      <div>
+        <div class="stat-val">3 år</div>
+        <div class="stat-label">IT-driftserfaring</div>
+      </div>
+      <div>
+        <div class="stat-val">5</div>
+        <div class="stat-label">Planlagte sertifiseringer</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATIONS -->
+<section id="certs">
+  <div class="section-label">Sertifiseringer</div>
+  <h2>Microsoft-sertifiseringer</h2>
+  <div class="certs-grid">
+    <div class="cert-card in-progress">
+      <div class="cert-top">
+        <div class="cert-code">AZ-104</div>
+        <span class="cert-badge badge-progress">Pågår</span>
+      </div>
+      <div class="cert-name">Azure Administrator Associate</div>
+      <div class="cert-bar-wrap">
+        <div class="cert-bar" style="width: 45%"></div>
+      </div>
+      <div class="cert-progress-label">Estimert eksamen: Q3 2025</div>
+    </div>
+
+    <div class="cert-card planned">
+      <div class="cert-top">
+        <div class="cert-code">MS-102</div>
+        <span class="cert-badge badge-planned">Planlagt</span>
+      </div>
+      <div class="cert-name">Microsoft 365 Administrator Expert</div>
+      <div class="cert-bar-wrap">
+        <div class="cert-bar" style="width: 0%"></div>
+      </div>
+      <div class="cert-progress-label">Starter etter AZ-104</div>
+    </div>
+
+    <div class="cert-card planned">
+      <div class="cert-top">
+        <div class="cert-code">MD-102</div>
+        <span class="cert-badge badge-planned">Planlagt</span>
+      </div>
+      <div class="cert-name">Endpoint Administrator Associate</div>
+      <div class="cert-bar-wrap">
+        <div class="cert-bar" style="width: 0%"></div>
+      </div>
+      <div class="cert-progress-label">Intune-fokus, mnd 8–12</div>
+    </div>
+
+    <div class="cert-card planned">
+      <div class="cert-top">
+        <div class="cert-code">SC-300</div>
+        <span class="cert-badge badge-planned">Planlagt</span>
+      </div>
+      <div class="cert-name">Identity & Access Administrator</div>
+      <div class="cert-bar-wrap">
+        <div class="cert-bar" style="width: 0%"></div>
+      </div>
+      <div class="cert-progress-label">Zero Trust & PIM, mnd 12–16</div>
+    </div>
+
+    <div class="cert-card planned">
+      <div class="cert-top">
+        <div class="cert-code">AZ-305</div>
+        <span class="cert-badge badge-planned">Planlagt</span>
+      </div>
+      <div class="cert-name">Azure Solutions Architect Expert</div>
+      <div class="cert-bar-wrap">
+        <div class="cert-bar" style="width: 0%"></div>
+      </div>
+      <div class="cert-progress-label">Krever AZ-104. Mnd 17–22</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Teknisk kompetanse</div>
+  <h2>Hva jeg jobber med</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">🪪</div>
+      <div class="skill-title">Entra ID</div>
+      <div class="skill-desc">Daglig administrasjon av brukere, grupper, MFA og Conditional Access i produksjonsmiljø med 350 ansatte.</div>
+      <div class="skill-tags">
+        <span class="tag">MFA</span>
+        <span class="tag">Grupper</span>
+        <span class="tag">Conditional Access</span>
+        <span class="tag">SSPR</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">☁️</div>
+      <div class="skill-title">Microsoft 365</div>
+      <div class="skill-desc">Administrerer M365 E5-miljø. Exchange Online, Teams, SharePoint og compliance-funksjoner i daglig drift.</div>
+      <div class="skill-tags">
+        <span class="tag">Exchange Online</span>
+        <span class="tag">Teams</span>
+        <span class="tag">Admin Center</span>
+        <span class="tag">E5</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔷</div>
+      <div class="skill-title">Azure</div>
+      <div class="skill-desc">Lab-miljø med Pay-As-You-Go. Arbeider med ressursgrupper, VMs, VNets og lagring for å bygge AZ-104-kompetanse.</div>
+      <div class="skill-tags">
+        <span class="tag">Resource Groups</span>
+        <span class="tag">VMs</span>
+        <span class="tag">VNet</span>
+        <span class="tag">Storage</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📱</div>
+      <div class="skill-title">Intune / Endpoint</div>
+      <div class="skill-desc">Bygger Intune-kompetanse i Business Premium-labmiljø. Enhetspolicyer, compliance og Autopilot.</div>
+      <div class="skill-tags">
+        <span class="tag">Intune</span>
+        <span class="tag">Autopilot</span>
+        <span class="tag">Compliance</span>
+        <span class="tag">MDM</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔒</div>
+      <div class="skill-title">Sikkerhet & compliance</div>
+      <div class="skill-desc">Offentlig sektor med GDPR og NSM-grunnprinsipper. Jobber med Zero Trust-tilnærming og minste privilegium.</div>
+      <div class="skill-tags">
+        <span class="tag">NSM</span>
+        <span class="tag">Zero Trust</span>
+        <span class="tag">GDPR</span>
+        <span class="tag">PIM</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">⌨️</div>
+      <div class="skill-title">PowerShell</div>
+      <div class="skill-desc">Kjører og tilpasser ferdige scripts for automatisering av repetitive administrasjonsoppgaver i M365 og Azure.</div>
+      <div class="skill-tags">
+        <span class="tag">Az module</span>
+        <span class="tag">MgGraph</span>
+        <span class="tag">ExchangeOnline</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAB PROJECTS -->
+<section id="lab">
+  <div class="section-label">Lab-prosjekter</div>
+  <h2>Praktiske øvelser & oppsett</h2>
+  <div class="lab-grid">
+    <div class="lab-card">
+      <div class="lab-card-header">
+        <div>
+          <div class="lab-card-title">Conditional Access policies</div>
+          <div class="lab-card-sub">Entra ID · Business Premium lab</div>
+        </div>
+        <span class="lab-difficulty diff-intermediate">Middels</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="lab-card-desc">
+          Satt opp CA-policyer for å blokkere tilgang fra utenfor Norge, kreve MFA ved risiko og håndheve compliant device-krav. Testet med named locations og sign-in logs.
+        </div>
+        <div class="lab-meta">
+          <div class="lab-meta-item"><div class="dot-green"></div> Entra ID</div>
+          <div class="lab-meta-item"><div class="dot-blue"></div> Zero Trust</div>
+          <div class="lab-meta-item"><div class="dot-amber"></div> SC-300 pensum</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-card">
+      <div class="lab-card-header">
+        <div>
+          <div class="lab-card-title">Azure Resource Group struktur</div>
+          <div class="lab-card-sub">Azure · Pay-As-You-Go</div>
+        </div>
+        <span class="lab-difficulty diff-beginner">Nybegynner</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="lab-card-desc">
+          Designet og satt opp en logisk ressursgruppe-struktur for labmiljøet. RBAC-tildelinger, tagging-strategi og kostnadsovervåking i Cost Management.
+        </div>
+        <div class="lab-meta">
+          <div class="lab-meta-item"><div class="dot-blue"></div> Azure</div>
+          <div class="lab-meta-item"><div class="dot-green"></div> RBAC</div>
+          <div class="lab-meta-item"><div class="dot-amber"></div> AZ-104 pensum</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-card">
+      <div class="lab-card-header">
+        <div>
+          <div class="lab-card-title">Intune device compliance</div>
+          <div class="lab-card-sub">Intune · Business Premium lab</div>
+        </div>
+        <span class="lab-difficulty diff-beginner">Nybegynner</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="lab-card-desc">
+          Konfigurert compliance-policyer for Windows-enheter og koblet disse til Conditional Access. Testet med en personlig Windows-PC som testdevice.
+        </div>
+        <div class="lab-meta">
+          <div class="lab-meta-item"><div class="dot-green"></div> Intune</div>
+          <div class="lab-meta-item"><div class="dot-blue"></div> Entra ID</div>
+          <div class="lab-meta-item"><div class="dot-amber"></div> MD-102 pensum</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">Om meg</div>
+  <h2>Bakgrunn</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Jeg jobber i et norsk offentlig direktorat med ca. 350 ansatte, hvor jeg har 3 års erfaring med IT-drift. Selvlært innenfor Microsoft-økosystemet med fokus på skyinfrastruktur, identitetsstyring og endepunktsikkerhet.</p>
+      <p>Miljøet mitt er Microsoft 365 E5 i produksjon, og jeg bruker et privat Business Premium-abonnement og Azure Pay-As-You-Go til å øve trygt uten å berøre produksjonssystemene.</p>
+      <p>Målet er å kombinere praktisk erfaring med et strukturert sertifiseringsløp frem mot Microsoft-sertifisering på arkitektnivå.</p>
+    </div>
+    <div class="about-meta">
+      <div class="meta-row">
+        <span class="meta-key">Stilling</span>
+        <span class="meta-val">IT-drift</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-key">Sektor</span>
+        <span class="meta-val">Norsk offentlig direktorat</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-key">Produksjonsmiljø</span>
+        <span class="meta-val">M365 E5 · 350 brukere</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-key">Lab-miljø</span>
+        <span class="meta-val">Business Premium + Azure PAYG</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-key">Fokusområde</span>
+        <span class="meta-val">Entra ID · Azure · Intune</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-key">Læringsform</span>
+        <span class="meta-val">Hands-on · Learning by doing</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-text">Ditt Navn — IT-portefølje</div>
+  <div class="footer-text">Oppdatert mars 2026</div>
+</footer>
+
+<script>
+  // Animate cert bars on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bar = entry.target.querySelector('.cert-bar');
+        if (bar) {
+          const w = bar.style.width;
+          bar.style.width = '0%';
+          requestAnimationFrame(() => {
+            setTimeout(() => { bar.style.width = w; }, 100);
+          });
+        }
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.cert-card').forEach(card => observer.observe(card));
+</script>
+</body>
+</html>
