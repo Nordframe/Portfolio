@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intune Device Compliance — Lab</title>
+<title>Intune Device Compliance — Karsten Skåla Ek</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -400,7 +400,7 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">ditt<span>navn</span>.no</a>
+  <a href="index.html" class="nav-logo">Karsten <span>Skåla Ek</span>.no</a>
   <a href="index.html#lab" class="nav-back">← Tilbake til lab-prosjekter</a>
 </nav>
 
@@ -441,12 +441,9 @@
           <div class="infobox-icon">💡</div>
           <div>Bekreft at enheten dukker opp under <strong>Enheter → Alle enheter</strong> i Intune-portalen før du fortsetter. Det kan ta noen minutter.</div>
         </div>
-        <div class="screenshot-placeholder">
-          <div class="screenshot-icon">🖥️</div>
-          <div class="screenshot-label">
-            <strong>Skjermbilde: Enhetsliste i Intune-portalen</strong>
-            Legg til skjermbilde fra Devices → All devices
-          </div>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div>Bekreft at enheten dukker opp under <strong>Devices → All devices</strong> i Intune-portalen. Det kan ta noen minutter etter registrering.</div>
         </div>
       </div>
     </div>
@@ -502,12 +499,9 @@
             </tr>
           </tbody>
         </table>
-        <div class="screenshot-placeholder">
-          <div class="screenshot-icon">📋</div>
-          <div class="screenshot-label">
-            <strong>Skjermbilde: Compliance policy-innstillinger</strong>
-            Legg til skjermbilde fra policy-konfigurasjonen
-          </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div>Alle innstillingene konfigureres under <strong>Devices → Compliance → Create policy → Windows 10 and later</strong>.</div>
         </div>
       </div>
     </div>
@@ -547,12 +541,9 @@
 <span class="key">Grant:</span>       <span class="val">Require device to be marked as compliant</span>
 <span class="key">Status:</span>      <span class="val">Report-only (testet i 48t før aktivering)</span>
         </div>
-        <div class="screenshot-placeholder">
-          <div class="screenshot-icon">🔐</div>
-          <div class="screenshot-label">
-            <strong>Skjermbilde: Conditional Access policy</strong>
-            Legg til skjermbilde fra CA-policyen i Entra ID
-          </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div>CA-policyen konfigureres under <strong>Entra ID → Security → Conditional Access → + New policy</strong>. Bruk Report-only i minst 48 timer før du aktiverer den fullt ut.</div>
         </div>
       </div>
     </div>
