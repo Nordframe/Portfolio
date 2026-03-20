@@ -372,6 +372,43 @@
 
   <div id="log-list" class="fade-up delay-2">
 
+    <!-- Resource Locks og DenyAction -->
+    <div class="log-entry" data-tags="azure">
+      <div class="log-left">
+        <div class="log-dot green"></div>
+        <div class="log-line"></div>
+      </div>
+      <div class="log-content">
+        <div class="log-date">Mars 2026</div>
+        <div class="log-card">
+          <div class="log-card-top">
+            <div class="log-title">Resource Locks og DenyAction — beskytt miljøet</div>
+            <span class="log-tag tag-green">Fullført</span>
+          </div>
+          <div class="log-text">
+            Satt opp Delete-locks manuelt på <strong>rg-lab-01</strong> og <strong>vm-lab-01</strong>. Forsøkte å automatisere locks via <strong>deployIfNotExists</strong>-policy, men byttet til <strong>DenyAction</strong>-policy som er enklere og mer robust. DenyAction blokkerer sletting av alle ressursgrupper på subskripsjons-nivå — verifisert i praksis.
+          </div>
+          <div class="log-boxes">
+            <div class="log-box box-learned">
+              <div class="log-box-label">Lærte</div>
+              DenyAction er enklere enn Resource Locks for å beskytte ressursgrupper — ingen Managed Identity, ingen ARM-template deployment. Contributor kan ikke fjerne DenyAction, men kan fjerne locks.
+            </div>
+            <div class="log-box box-fail">
+              <div class="log-box-label">Gikk galt</div>
+              deployIfNotExists for auto-lock på ressursgrupper er teknisk krevende — krever subscription-scope ARM-template deployment. Byttet til DenyAction som løser samme problem enklere.
+            </div>
+          </div>
+          <div class="log-pills">
+            <span class="log-pill">Resource Locks</span>
+            <span class="log-pill">DenyAction</span>
+            <span class="log-pill">Azure Policy</span>
+            <span class="log-pill">AZ-104</span>
+            <span class="log-pill"><a href="azure-resource-locks.html">Full dokumentasjon →</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Azure Lab fra scratch -->
     <div class="log-entry" data-tags="azure">
       <div class="log-left">
