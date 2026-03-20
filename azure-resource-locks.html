@@ -417,10 +417,11 @@
       <span>Resource Locks</span>
     </div>
     <h1 class="page-title">Resource Locks —<br>beskytt mot utilsiktet sletting</h1>
-    <p class="page-subtitle">Satt opp Resource Locks på rg-lab-01 for å hindre utilsiktet sletting eller endring av kritiske ressurser. En av de enkleste og viktigste tingene å gjøre i et Azure-miljø.</p>
+    <p class="page-subtitle">Satt opp Resource Locks og DenyAction-policy for å beskytte lab-miljøet mot utilsiktet sletting. Kombinerer manuell lock på kritiske ressurser med en policy som blokkerer sletting av alle ressursgrupper.</p>
     <div class="meta-pills">
       <span class="pill"><span class="pill-dot" style="background:var(--green)"></span>Fullført</span>
       <span class="pill">Resource Locks</span>
+      <span class="pill">DenyAction</span>
       <span class="pill">Governance</span>
       <span class="pill">AZ-104 pensum</span>
     </div>
@@ -532,6 +533,79 @@
         <div class="infobox infobox-tip">
           <div class="infobox-icon">💡</div>
           <div><strong>I produksjon</strong> setter du locks på alle kritiske ressurser — Key Vaults, databaser, storage accounts og VNets. Ressursgruppe-lock alene er ikke alltid nok siden den kan fjernes av noen med tilgang på gruppenivå.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+    <!-- DENYACTION -->
+    <div class="phase-heading">Steg 4 — DenyAction policy <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Hvorfor DenyAction er bedre enn locks for ressursgrupper</div>
+        <div class="step-body">
+          Det ble forsøkt å sette opp en <strong>deployIfNotExists</strong>-policy som automatisk deployer locks på nye ressursgrupper — men dette er teknisk krevende fordi locks på ressursgrupper krever subscription-scope ARM-template deployment. DenyAction-effekten løser det samme problemet på en enklere måte.
+        </div>
+        <div class="concept-grid" style="margin-bottom:20px">
+          <div class="concept-item">
+            <div class="concept-item-label">Resource Lock</div>
+            <div class="concept-item-text">Owner kan fjerne. Krever manuell oppsett per ressurs. Arves nedover fra ressursgruppe.</div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-item-label">DenyAction</div>
+            <div class="concept-item-text">Contributor kan ikke fjerne. Ingen Managed Identity. Blokkerer direkte i policy-laget. Enklere å skalere.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Opprett og tilordne DenyAction-policy</div>
+        <div class="step-body">
+          En custom policy-definisjon ble opprettet med <strong>denyAction</strong>-effekt som blokkerer delete-operasjoner på alle ressursgrupper i subskripsjonen.
+        </div>
+        <div class="code-block" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;font-family:var(--font-mono);font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:16px">
+<span style="color:var(--accent2)">"mode"</span>: <span style="color:var(--green)">"All"</span>,
+<span style="color:var(--accent2)">"policyRule"</span>: {
+  <span style="color:var(--accent2)">"if"</span>: {
+    <span style="color:var(--accent2)">"field"</span>: <span style="color:var(--green)">"type"</span>,
+    <span style="color:var(--accent2)">"equals"</span>: <span style="color:var(--green)">"Microsoft.Resources/subscriptions/resourceGroups"</span>
+  },
+  <span style="color:var(--accent2)">"then"</span>: {
+    <span style="color:var(--accent2)">"effect"</span>: <span style="color:var(--green)">"denyAction"</span>,
+    <span style="color:var(--accent2)">"details"</span>: {
+      <span style="color:var(--accent2)">"actionNames"</span>: [<span style="color:var(--green)">"delete"</span>]
+    }
+  }
+}
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <tbody>
+            <tr><td>Navn</td><td class="val-green">Deny delete on resource groups</td><td>—</td></tr>
+            <tr><td>Scope</td><td class="val-green">Nordframe-Lab (subskripsjons-nivå)</td><td>Gjelder alle ressursgrupper i subskripsjonen</td></tr>
+            <tr><td>Effekt</td><td class="val-green">denyAction</td><td>Blokkerer delete-operasjoner direkte</td></tr>
+            <tr><td>Krever Managed Identity</td><td class="val-green">Nei</td><td>Ingen deployment — bare blokkering</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-tip" style="display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin-bottom:20px;font-size:14px;line-height:1.6;background:var(--green-dim);border:1px solid rgba(45,212,160,0.2);color:var(--muted2)">
+          <div style="font-size:16px;flex-shrink:0;margin-top:2px">💡</div>
+          <div><strong>Verifisert:</strong> Forsøk på å slette rg-lab-test resulterte i feilmelding: <em>"Deletion of resource was disallowed by policy"</em>. DenyAction fungerer som forventet.</div>
+        </div>
+        <div class="infobox infobox-warn" style="display:flex;gap:14px;padding:16px 18px;border-radius:10px;margin-bottom:20px;font-size:14px;line-height:1.6;background:var(--amber-dim);border:1px solid rgba(245,166,35,0.2);color:var(--muted2)">
+          <div style="font-size:16px;flex-shrink:0;margin-top:2px">⚠️</div>
+          <div>For å slette en ressursgruppe mens DenyAction er aktiv må du midlertidig sette <strong>Policy enforcement: Disabled</strong> på assignmenten, slette ressursgruppen, og aktivere policyen igjen.</div>
         </div>
       </div>
     </div>
