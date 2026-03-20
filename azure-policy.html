@@ -591,13 +591,117 @@
         <div class="step-body">
           Etter at policies er tilordnet evaluerer Azure eksisterende ressurser og viser compliance-status. Eksisterende ressurser som bryter reglene vises som non-compliant, men slettes ikke.
         </div>
+        <table class="settings-table">
+          <thead><tr><th>Policy</th><th>Status</th><th>Non-compliant ressurser</th></tr></thead>
+          <tbody>
+            <tr><td>Require a tag on resources</td><td class="val-red">Non-compliant</td><td>9 — eksisterende ressurser fra Lab 1 manglet tag</td></tr>
+            <tr><td>Allow Norway East only</td><td class="val-green">Compliant</td><td>0 — alle ressurser lå allerede i Norway East</td></tr>
+            <tr><td>Allowed virtual machine size SKUs</td><td class="val-amber">Not started</td><td>0 — evaluering ikke startet ennå</td></tr>
+            <tr><td>ASC Default</td><td class="val-red">Non-compliant</td><td>35 — Defender for Cloud-anbefalinger (ikke vårt ansvar)</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div><strong>Deny-effekt sletter ikke eksisterende ressurser.</strong> Deny gjelder kun nye ressurser som opprettes etter at policyen er aktiv. Eksisterende ressurser merkes som non-compliant, men fjernes ikke.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POWERSHELL TAGGING -->
+    <div class="phase-heading">Retting — Tag eksisterende ressurser med PowerShell <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Installer Az-modulen og sett Execution Policy</div>
         <div class="step-body">
-          Gå til <strong>Policy → Compliance</strong> for å se hvilke ressurser som er compliant og hvilke som ikke er det. Dette er samme visning som Defender for Cloud bruker for regulatorisk compliance.
+          For å tagge alle ressurser på én gang ble PowerShell brukt. Az-modulen var ikke installert fra før, og Windows blokkerte kjøring av scripts som standard.
+        </div>
+        <div class="infobox infobox-warn">
+          <div class="infobox-icon">⚠️</div>
+          <div><strong>Execution Policy</strong> er en Windows-sikkerhetsinnstilling som blokkerer kjøring av PowerShell-scripts. Dette er en vanlig feil første gang man bruker PowerShell på en ny maskin.</div>
+        </div>
+        <div class="code-block">
+<span class="comment"># Installer Az-modulen (én gang, tar 5-10 minutter)</span>
+<span class="key">Install-Module</span> <span class="val">-Name Az -Repository PSGallery -Force -AllowClobber -Scope CurrentUser</span>
+
+<span class="comment"># Fiks Execution Policy — blokkerer scripts som standard i Windows</span>
+<span class="key">Set-ExecutionPolicy</span> <span class="val">-ExecutionPolicy RemoteSigned -Scope CurrentUser</span>
+
+<span class="comment"># Last inn modulen og logg inn</span>
+<span class="key">Import-Module</span> <span class="val">Az.Accounts</span>
+<span class="key">Connect-AzAccount</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Tagg alle ressurser i rg-lab-01 med PowerShell</div>
+        <div class="step-body">
+          Scriptet henter alle ressurser i ressursgruppen, beholder eksisterende tags og legger til de nye. <strong>dcr-lab-01 (Data Collection Rule) støtter ikke tagging via Set-AzResource</strong> og ble tagget manuelt i portalen etterpå.
+        </div>
+        <div class="code-block">
+<span class="comment"># Definer ressursgruppe og tags</span>
+<span class="key">$resourceGroupName</span> = <span class="val">"rg-lab-01"</span>
+<span class="key">$tags</span> = @{
+    <span class="val">"environment"</span> = <span class="val">"lab"</span>
+    <span class="val">"owner"</span>       = <span class="val">"Karsten"</span>
+    <span class="val">"purpose"</span>     = <span class="val">"training"</span>
+}
+
+<span class="comment"># Hent alle ressurser i ressursgruppen</span>
+<span class="key">$resources</span> = <span class="val">Get-AzResource -ResourceGroupName $resourceGroupName</span>
+
+<span class="comment"># Loop gjennom og tagg hver ressurs</span>
+foreach (<span class="key">$resource</span> in <span class="key">$resources</span>) {
+    <span class="key">$existingTags</span> = <span class="key">$resource</span>.Tags
+    if (<span class="key">$existingTags</span> -eq <span class="val">$null</span>) { <span class="key">$existingTags</span> = @{} }
+    <span class="key">$mergedTags</span> = <span class="key">$existingTags</span> + <span class="key">$tags</span>
+    <span class="val">Set-AzResource -ResourceId $resource.ResourceId -Tag $mergedTags -Force</span>
+    <span class="val">Write-Host</span> <span class="val">"Tagget: $($resource.Name)"</span>
+}
+<span class="val">Write-Host "Ferdig — alle ressurser er tagget"</span>
+        </div>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div>Vi bruker <strong>$mergedTags = $existingTags + $tags</strong> i stedet for å overskrive direkte. Dette sikrer at eksisterende tags ikke slettes — viktig i produksjonsmiljøer der ressurser kan ha tags fra andre systemer.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">3</div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Tving compliance-evaluering og verifiser</div>
+        <div class="step-body">
+          Azure Policy evaluerer ikke ressurser umiddelbart. Etter tagging ble en manuell compliance-scan trigget via PowerShell, og alle 9 ressurser ble verifisert som compliant.
+        </div>
+        <div class="code-block">
+<span class="comment"># Tving en ny compliance-evaluering (tar 5-15 minutter)</span>
+<span class="key">Start-AzPolicyComplianceScan</span> <span class="val">-ResourceGroupName "rg-lab-01"</span>
         </div>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div>Det kan ta opptil <strong>30 minutter</strong> før compliance-statusen oppdateres etter at en policy er tildelt. Hvis du ser "Not started" — vent litt og refresh.</div>
+          <div><strong>Remediation task er grået ut på Deny-policies</strong> — remediation støttes kun for Modify og DeployIfNotExists. For Deny-policies brukes <code>Start-AzPolicyComplianceScan</code> for å tvinge re-evaluering etter at ressurser er rettet opp manuelt.</div>
         </div>
+        <table class="settings-table">
+          <thead><tr><th>Policy</th><th>Etter retting</th></tr></thead>
+          <tbody>
+            <tr><td>Require a tag on resources</td><td class="val-green">Compliant — alle 9 ressurser tagget</td></tr>
+            <tr><td>Allow Norway East only</td><td class="val-green">Compliant</td></tr>
+            <tr><td>Allowed virtual machine size SKUs</td><td class="val-green">Compliant</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
