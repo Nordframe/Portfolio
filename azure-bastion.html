@@ -550,7 +550,7 @@
     </div>
 
     <!-- STEG 4 -->
-    <div class="phase-heading">Steg 4 — Fjern RDP-regel fra NSG <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 4 — Rydd opp etter bruk <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -560,6 +560,10 @@
         <div class="step-title">Slett Bastion og Public IP etter bruk</div>
         <div class="step-body">
           Bastion koster ~$4.70/dag selv når VM-en er stoppet. Slett derfor både Bastion-ressursen og den tilhørende Public IP-en etter hver lab-økt. <strong>Public IP-en slettes ikke automatisk når du sletter Bastion</strong> — den må slettes manuelt og koster ~$3/mnd hvis den blir liggende.
+        </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div><strong>RDP-regelen i NSG ble beholdt</strong> — Bastion og RDP er ikke gjensidig utelukkende. RDP er raskere for daglig lab-bruk, Bastion brukes når sikkerhetskrav tilsier det eller du ikke har RDP-klient tilgjengelig.</div>
         </div>
         <table class="settings-table">
           <thead><tr><th>Handling</th><th>Kostnad spart</th></tr></thead>
