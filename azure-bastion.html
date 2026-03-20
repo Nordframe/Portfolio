@@ -557,21 +557,46 @@
         <div class="step-num done">1</div>
       </div>
       <div class="step-content">
-        <div class="step-title">Slett Allow-RDP-MyIP fra nsg-lab-01</div>
+        <div class="step-title">Slett Bastion og Public IP etter bruk</div>
         <div class="step-body">
-          Nå som Bastion håndterer tilkoblingen trenger vi ikke lenger RDP-regelen i NSG-en. RDP-porten er nå fullstendig lukket mot internett — selv om noen finner VM-ens public IP kan de ikke koble til.
+          Bastion koster ~$4.70/dag selv når VM-en er stoppet. Slett derfor både Bastion-ressursen og den tilhørende Public IP-en etter hver lab-økt. <strong>Public IP-en slettes ikke automatisk når du sletter Bastion</strong> — den må slettes manuelt og koster ~$3/mnd hvis den blir liggende.
         </div>
         <table class="settings-table">
-          <thead><tr><th>Handling</th><th>Resultat</th></tr></thead>
+          <thead><tr><th>Handling</th><th>Kostnad spart</th></tr></thead>
           <tbody>
-            <tr><td>Slettet Allow-RDP-MyIP fra nsg-lab-01</td><td class="val-green">Port 3389 lukket mot internett</td></tr>
-            <tr><td>Bastion håndterer tilkobling over TLS 443</td><td class="val-green">Ingen eksponerte administrasjonsporter</td></tr>
+            <tr><td>Slett bastion-lab-01</td><td class="val-green">~$4.70/dag</td></tr>
+            <tr><td>Slett bastion-lab-01-pip (Public IP)</td><td class="val-green">~$3/mnd</td></tr>
           </tbody>
         </table>
+        <div class="infobox infobox-warn">
+          <div class="infobox-icon">⚠️</div>
+          <div><strong>Public IP slettes ikke automatisk</strong> når du sletter Bastion. Gå til rg-lab-01 og slett bastion-lab-01-pip manuelt etterpå. Bastion oppretter automatisk en ny Public IP neste gang du setter det opp.</div>
+        </div>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div><strong>Husk å stoppe Bastion etter bruk</strong> — slett Bastion-ressursen når du er ferdig med lab-økten for å unngå kostnad. Bastion kan opprettes på nytt neste gang på ca. 10 minutter.</div>
+          <div>Bastion kan opprettes på nytt på ca. 10 minutter neste gang du trenger det. Med et budsjett på 250 kr/mnd vil Bastion alene spise det opp på under to dager hvis du lar den stå.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- ERFARINGER -->
+    <div class="phase-heading">Erfaringer underveis <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Hva gikk galt og hva lærte vi</div>
+        <table class="settings-table">
+          <thead><tr><th>Hva</th><th>Hva skjedde</th><th>Løsning</th></tr></thead>
+          <tbody>
+            <tr><td>Azure Policy blokkerte opprettelse</td><td>Ressursene manglet environment-tag — Lab 2-policyen fungerte som forventet</td><td>La til tags i Tags-fanen under opprettelse</td></tr>
+            <tr><td>Edge blokkerte popup</td><td>Bastion åpner RDP i nytt nettleservindu</td><td>Tillat popups fra portal.azure.com i adressefeltet</td></tr>
+            <tr><td>Server Manager popup</td><td>Åpner automatisk ved innlogging på Windows Server</td><td>Huk av "Don't show this message again"</td></tr>
+            <tr><td>Public IP ble ikke slettet automatisk</td><td>bastion-lab-01-pip ble liggende etter Bastion ble slettet</td><td>Slett Public IP manuelt i rg-lab-01 etter at Bastion er slettet</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
