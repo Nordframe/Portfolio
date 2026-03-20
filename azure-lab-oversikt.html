@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Lab — Oversikt</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+    margin: 0;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+  p.sub {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 24px;
+  }
+  svg {
+    max-width: 720px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    padding: 16px;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body>
+<h1>Azure Lab — Nordframe-Lab</h1>
+<p class="sub">Oppdatert: 2026-03-20 &nbsp;|&nbsp; Alle ressurser i Norway East &nbsp;|&nbsp; rg-lab-01</p>
+
+<svg viewBox="0 0 680 540" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Outer container: rg-lab-01 -->
+  <rect x="20" y="20" width="640" height="500" rx="16" fill="#f1efe8" stroke="#888780" stroke-width="0.5"/>
+  <text x="340" y="50" text-anchor="middle" font-family="Arial" font-size="15" font-weight="600" fill="#2c2c2a">rg-lab-01 — Norway East</text>
+
+  <!-- Nettverk -->
+  <rect x="40" y="68" width="290" height="128" rx="12" fill="#e6f1fb" stroke="#185fa5" stroke-width="0.5"/>
+  <text x="185" y="92" text-anchor="middle" font-family="Arial" font-size="13" font-weight="600" fill="#0c447c">Nettverk</text>
+  <text x="185" y="112" text-anchor="middle" font-family="Arial" font-size="11" fill="#185fa5">vnet-lab-01 — 10.0.0.0/16</text>
+  <text x="185" y="130" text-anchor="middle" font-family="Arial" font-size="11" fill="#185fa5">snet-lab-01 — 10.0.1.0/24</text>
+  <text x="185" y="148" text-anchor="middle" font-family="Arial" font-size="11" fill="#185fa5">nsg-lab-01 — RDP fra din IP (:3389)</text>
+  <text x="185" y="166" text-anchor="middle" font-family="Arial" font-size="11" fill="#185fa5">vm-lab-01-ip — Public IP</text>
+  <text x="185" y="184" text-anchor="middle" font-family="Arial" font-size="11" fill="#185fa5">vm-lab-01203_z1 — NIC</text>
+
+  <!-- Entra ID -->
+  <rect x="350" y="68" width="290" height="128" rx="12" fill="#eeedfe" stroke="#534ab7" stroke-width="0.5"/>
+  <text x="495" y="92" text-anchor="middle" font-family="Arial" font-size="13" font-weight="600" fill="#3c3489">Entra ID</text>
+  <text x="495" y="112" text-anchor="middle" font-family="Arial" font-size="11" fill="#534ab7">lab-azureadmin01</text>
+  <text x="495" y="130" text-anchor="middle" font-family="Arial" font-size="11" fill="#534ab7">lab-identityadmin01</text>
+  <text x="495" y="148" text-anchor="middle" font-family="Arial" font-size="11" fill="#534ab7">grp-lab-azureadmins (Security)</text>
+  <text x="495" y="166" text-anchor="middle" font-family="Arial" font-size="11" fill="#534ab7">RBAC: Contributor → rg-lab-01</text>
+  <text x="495" y="184" text-anchor="middle" font-family="Arial" font-size="11" fill="#534ab7">Tilgang på ressursgruppe-nivå</text>
+
+  <!-- VM -->
+  <rect x="40" y="216" width="290" height="108" rx="12" fill="#e1f5ee" stroke="#0f6e56" stroke-width="0.5"/>
+  <text x="185" y="240" text-anchor="middle" font-family="Arial" font-size="13" font-weight="600" fill="#085041">Virtuell maskin</text>
+  <text x="185" y="260" text-anchor="middle" font-family="Arial" font-size="11" fill="#0f6e56">vm-lab-01</text>
+  <text x="185" y="278" text-anchor="middle" font-family="Arial" font-size="11" fill="#0f6e56">Windows Server 2025 Datacenter Gen2</text>
+  <text x="185" y="296" text-anchor="middle" font-family="Arial" font-size="11" fill="#0f6e56">Standard_D2s_v3 — ~$0.10/time</text>
+  <text x="185" y="314" text-anchor="middle" font-family="Arial" font-size="11" fill="#0f6e56">Status: Stopped (deallocated)</text>
+
+  <!-- Sikkerhet -->
+  <rect x="350" y="216" width="290" height="108" rx="12" fill="#faece7" stroke="#993c1d" stroke-width="0.5"/>
+  <text x="495" y="240" text-anchor="middle" font-family="Arial" font-size="13" font-weight="600" fill="#712b13">Defender for Cloud</text>
+  <text x="495" y="260" text-anchor="middle" font-family="Arial" font-size="11" fill="#993c1d">Foundational CSPM — Gratis</text>
+  <text x="495" y="278" text-anchor="middle" font-family="Arial" font-size="11" fill="#993c1d">Defender for Servers — 30d gratis</text>
+  <text x="495" y="296" text-anchor="middle" font-family="Arial" font-size="11" fill="#993c1d">Defender for Resource Manager — 30d</text>
+  <text x="495" y="314" text-anchor="middle" font-family="Arial" font-size="11" fill="#993c1d">E-postvarsler: High / Critical</text>
+
+  <!-- Monitor -->
+  <rect x="40" y="344" width="290" height="108" rx="12" fill="#faeeda" stroke="#854f0b" stroke-width="0.5"/>
+  <text x="185" y="368" text-anchor="middle" font-family="Arial" font-size="13" font-weight="600" fill="#633806">Monitor og logging</text>
+  <text x="185" y="388" text-anchor="middle" font-family="Arial" font-size="11" fill="#854f0b">law-lab-01 — Log Analytics Workspace</text>
+  <text x="185" y="406" text-anchor="middle" font-family="Arial" font-size="11" fill="#854f0b">dcr-lab-01 — Data Collection Rule</text>
+  <text x="185" y="424" text-anchor="middle" font-family="Arial" font-size="11" fill="#854f0b">Samler: App / Security / System logs</text>
+  <text x="185" y="442" text-anchor="middle" font-family="Arial" font-size="11" fill="#854f0b">vm-lab-01 → law-lab-01</text>
+
+  <!-- Kostnad -->
+  <rect x="350" y="344" width="290" height="108" rx="12" fill="#eaf3de" stroke="#3b6d11" stroke-width="0.5"/>
+  <text x="495" y="368" text-anchor="middle" font-family="Arial" font-size="13" font-weight="600" fill="#27500a">Kostnadsstyring</text>
+  <text x="495" y="388" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b6d11">Budsjett: 250 kr/mnd (Pay-As-You-Go)</text>
+  <text x="495" y="406" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b6d11">Varsel ved 80% og 100%</text>
+  <text x="495" y="424" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b6d11">VM stoppes til Stopped (deallocated)</text>
+  <text x="495" y="442" text-anchor="middle" font-family="Arial" font-size="11" fill="#3b6d11">Estimert: ~25 kr/mnd ved 2t/økt 3x/uke</text>
+
+</svg>
+</body>
+</html>
