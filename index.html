@@ -145,6 +145,114 @@
     background: rgba(79,127,255,0.08);
   }
 
+  .nav-links a.nav-github {
+    color: var(--muted2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-links a.nav-github:hover {
+    color: var(--text);
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .cert-journey {
+    margin-bottom: 52px;
+    padding: 24px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+
+  .cert-journey-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+
+  .cert-journey-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .cert-journey-pct {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent2);
+  }
+
+  .cert-journey-bar-outer {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .cert-journey-bar-inner {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--purple) 100%);
+    box-shadow: 0 0 10px rgba(79,127,255,0.4);
+    transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .cert-journey-steps {
+    display: flex;
+    gap: 0;
+    position: relative;
+  }
+
+  .cert-journey-step {
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    position: relative;
+    padding-top: 8px;
+  }
+
+  .cert-journey-step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+  }
+
+  .cert-journey-step.done::before {
+    background: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  .cert-journey-step.active::before {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    box-shadow: 0 0 6px var(--accent2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .cert-journey-step.active { color: var(--accent2); }
+  .cert-journey-step.done { color: var(--green); }
+
   /* ── Sections ── */
   section {
     position: relative;
@@ -314,6 +422,66 @@
     margin-top: 8px;
     letter-spacing: 0.04em;
   }
+
+  /* ── Tech stack ── */
+  .tech-stack {
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.8s cubic-bezier(0.4,0,0.2,1) 0.5s forwards;
+  }
+
+  .tech-stack-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .tech-stack-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .tech-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .tech-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .tech-badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.8;
+  }
+
+  .badge-azure   { background: rgba(0,120,212,0.12); color: #60a5fa; border-color: rgba(0,120,212,0.2); }
+  .badge-entra   { background: rgba(116,78,194,0.12); color: #a78bfa; border-color: rgba(116,78,194,0.2); }
+  .badge-m365    { background: rgba(210,73,42,0.12); color: #f87171; border-color: rgba(210,73,42,0.2); }
+  .badge-intune  { background: rgba(0,164,180,0.12); color: #22d3ee; border-color: rgba(0,164,180,0.2); }
+  .badge-defender { background: rgba(0,188,140,0.12); color: #2dd4a0; border-color: rgba(0,188,140,0.2); }
+  .badge-ps      { background: rgba(90,130,190,0.12); color: #93c5fd; border-color: rgba(90,130,190,0.2); }
+  .badge-devops  { background: rgba(60,140,210,0.12); color: #7dd3fc; border-color: rgba(60,140,210,0.2); }
+  .badge-policy  { background: rgba(245,166,35,0.12); color: #fbbf24; border-color: rgba(245,166,35,0.2); }
 
   /* ── Section headings ── */
   .section-label {
@@ -736,7 +904,12 @@
     <li><a href="#certs">Sertifiseringer</a></li>
     <li><a href="#skills">Kompetanse</a></li>
     <li><a href="#lab">Lab-prosjekter</a></li>
+    <li><a href="lab-logg.html">Lab-logg</a></li>
     <li><a href="#about">Om meg</a></li>
+    <li><a href="https://github.com/Nordframe/Portfolio" target="_blank" rel="noopener" class="nav-github">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a></li>
   </ul>
 </nav>
 
@@ -755,22 +928,17 @@
       <a href="#lab" class="btn-primary">Se lab-prosjekter →</a>
       <a href="#certs" class="btn-ghost">Sertifiseringer</a>
     </div>
-    <div class="hero-stats">
-      <div>
-        <div class="stat-val">350</div>
-        <div class="stat-label">Brukere i produksjon</div>
-      </div>
-      <div>
-        <div class="stat-val">E5</div>
-        <div class="stat-label">Microsoft 365 lisensnivå</div>
-      </div>
-      <div>
-        <div class="stat-val">3 år</div>
-        <div class="stat-label">IT-driftserfaring</div>
-      </div>
-      <div>
-        <div class="stat-val">5</div>
-        <div class="stat-label">Planlagte sertifiseringer</div>
+    <div class="tech-stack">
+      <div class="tech-stack-label">// Daglig stack</div>
+      <div class="tech-stack-badges">
+        <span class="tech-badge badge-azure">Azure</span>
+        <span class="tech-badge badge-entra">Entra ID</span>
+        <span class="tech-badge badge-m365">M365 E5</span>
+        <span class="tech-badge badge-intune">Intune</span>
+        <span class="tech-badge badge-defender">Defender</span>
+        <span class="tech-badge badge-ps">PowerShell</span>
+        <span class="tech-badge badge-devops">Azure DevOps</span>
+        <span class="tech-badge badge-policy">Azure Policy</span>
       </div>
     </div>
   </div>
@@ -780,6 +948,23 @@
 <section id="certs">
   <div class="section-label reveal">Sertifiseringer</div>
   <h2 class="reveal reveal-delay-1">Microsoft-sertifiseringer</h2>
+  <div class="cert-journey reveal reveal-delay-2" id="cert-journey-bar">
+    <div class="cert-journey-header">
+      <div class="cert-journey-title">Sertifiseringsreise</div>
+      <div class="cert-journey-pct">1 / 5 fullført</div>
+    </div>
+    <div class="cert-journey-bar-outer">
+      <div class="cert-journey-bar-inner" data-width="20%"></div>
+    </div>
+    <div class="cert-journey-steps">
+      <div class="cert-journey-step active">AZ-104</div>
+      <div class="cert-journey-step">MS-102</div>
+      <div class="cert-journey-step">MD-102</div>
+      <div class="cert-journey-step">SC-300</div>
+      <div class="cert-journey-step">AZ-305</div>
+    </div>
+  </div>
+
   <div class="certs-grid">
     <div class="cert-card in-progress reveal reveal-delay-1">
       <div class="cert-top">
@@ -1071,6 +1256,21 @@
   }, { threshold: 0.3 });
 
   document.querySelectorAll('.cert-card').forEach(card => certObserver.observe(card));
+
+  // Journey bar animation
+  const journeyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bar = entry.target.querySelector('.cert-journey-bar-inner[data-width]');
+        if (bar) {
+          setTimeout(() => { bar.style.width = bar.getAttribute('data-width'); }, 200);
+        }
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const journeyEl = document.getElementById('cert-journey-bar');
+  if (journeyEl) journeyObserver.observe(journeyEl);
 </script>
 </body>
 </html>
