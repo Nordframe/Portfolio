@@ -434,7 +434,7 @@
       <p style="font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:16px">Resource Locks hindrer at ressurser i Azure blir slettet eller endret ved en feil — selv av brukere med Owner-rolle. En lock overstyrer alle RBAC-tillatelser. Det er den siste forsvarslinjen mot menneskelige feil.</p>
       <div class="concept-grid">
         <div class="concept-item">
-          <div class="concept-item-label">CanNotDelete</div>
+          <div class="concept-item-label">Delete</div>
           <div class="concept-item-text">Ressursen kan leses og endres, men ikke slettes. Den vanligste lock-typen i produksjon — beskytter mot utilsiktet sletting uten å hindre drift.</div>
         </div>
         <div class="concept-item">
@@ -453,7 +453,7 @@
     </div>
 
     <!-- STEG 1 -->
-    <div class="phase-heading">Steg 1 — Sett CanNotDelete-lock på rg-lab-01 <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 1 — Sett Delete-lock på rg-lab-01 <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -469,14 +469,14 @@
           <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
           <tbody>
             <tr><td>Scope</td><td class="val-green">rg-lab-01</td><td>Arves av alle ressurser inni gruppen</td></tr>
-            <tr><td>Lock name</td><td class="val-green">lock-rg-lab-01-nodelete</td><td>Navnekonvensjon: lock-[ressurs]-[type]</td></tr>
-            <tr><td>Lock type</td><td class="val-green">CanNotDelete</td><td>Kan endres men ikke slettes</td></tr>
+            <tr><td>Lock name</td><td class="val-green">lock-rg-lab-01-delete</td><td>Navnekonvensjon: lock-[ressurs]-[type]</td></tr>
+            <tr><td>Lock type</td><td class="val-green">Delete</td><td>Kan endres men ikke slettes</td></tr>
             <tr><td>Notes</td><td>Lab-miljø. Fjern kun ved planlagt sletting av hele miljøet.</td><td>Dokumenter hvorfor locken finnes</td></tr>
           </tbody>
         </table>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div><strong>Hvorfor ikke ReadOnly?</strong> ReadOnly ville blokkert normal lab-bruk — du kan ikke starte/stoppe VM-er, endre NSG-regler eller oppdatere tags. CanNotDelete gir beskyttelse uten å hindre drift.</div>
+          <div><strong>Hvorfor ikke ReadOnly?</strong> ReadOnly ville blokkert normal lab-bruk — du kan ikke starte/stoppe VM-er, endre NSG-regler eller oppdatere tags. Delete gir beskyttelse uten å hindre drift.</div>
         </div>
       </div>
     </div>
@@ -502,7 +502,7 @@
           <thead><tr><th>Test</th><th>Forventet resultat</th></tr></thead>
           <tbody>
             <tr><td>Forsøk å slette rg-lab-01</td><td class="val-green">Feilmelding: "The scope is locked"</td></tr>
-            <tr><td>Forsøk å endre tags på en ressurs</td><td class="val-green">Tillatt — CanNotDelete blokkerer ikke endringer</td></tr>
+            <tr><td>Forsøk å endre tags på en ressurs</td><td class="val-green">Tillatt — Delete blokkerer ikke endringer</td></tr>
           </tbody>
         </table>
       </div>
@@ -516,7 +516,7 @@
         <div class="step-num done">1</div>
       </div>
       <div class="step-content">
-        <div class="step-title">Sett CanNotDelete direkte på vm-lab-01</div>
+        <div class="step-title">Sett Delete direkte på vm-lab-01</div>
         <div class="step-body">
           I tillegg til ressursgruppe-locken setter vi en egen lock direkte på VM-en. Dette er dobbeltsikring — selv om noen fjerner ressursgruppe-locken er VM-en fortsatt beskyttet.
         </div>
@@ -524,8 +524,8 @@
           <thead><tr><th>Innstilling</th><th>Verdi</th></tr></thead>
           <tbody>
             <tr><td>Scope</td><td class="val-green">vm-lab-01</td></tr>
-            <tr><td>Lock name</td><td class="val-green">lock-vm-lab-01-nodelete</td></tr>
-            <tr><td>Lock type</td><td class="val-green">CanNotDelete</td></tr>
+            <tr><td>Lock name</td><td class="val-green">lock-vm-lab-01-delete</td></tr>
+            <tr><td>Lock type</td><td class="val-green">Delete</td></tr>
             <tr><td>Notes</td><td>Dobbeltsikring av lab-VM. Fjern ved planlagt sletting.</td></tr>
           </tbody>
         </table>
