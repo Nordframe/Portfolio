@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Key Vault — Karsten Skåla Ek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #1a2235;
+    --surface2: #202c42;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8edf5;
+    --muted: #6b7a99;
+    --muted2: #8a9bbf;
+    --accent: #4f7fff;
+    --accent2: #6b96ff;
+    --green: #2dd4a0;
+    --green-dim: rgba(45,212,160,0.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --red: #f56565;
+    --red-dim: rgba(245,101,101,0.12);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,127,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,127,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-back:hover { color: var(--text); }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  .page-header {
+    padding-top: 112px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 64px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+  }
+
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent2); }
+  .breadcrumb-sep { color: var(--border2); }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  .page-subtitle {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--muted2);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    background: var(--surface);
+  }
+
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  .concept-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 48px;
+  }
+
+  .concept-box h3 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .concept-item {
+    padding: 14px 16px;
+    background: var(--surface2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .concept-item-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 6px;
+  }
+
+  .concept-item-text {
+    font-size: 13px;
+    color: var(--muted2);
+    line-height: 1.55;
+  }
+
+  .phase-heading {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 32px;
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(45,212,160,0.2);
+  }
+
+  .step { display: flex; gap: 28px; }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  .step-num.done {
+    background: var(--green-dim);
+    border-color: rgba(45,212,160,0.3);
+    color: var(--green);
+  }
+
+  .step-line {
+    width: 1px;
+    flex: 1;
+    min-height: 24px;
+    background: var(--border);
+    margin: 8px 0;
+  }
+
+  .step-content { padding-bottom: 48px; flex: 1; }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding-top: 4px;
+  }
+
+  .step-body {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--muted2);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+
+  .step-body strong { color: var(--text); font-weight: 500; }
+
+  .settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .settings-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted2);
+    vertical-align: top;
+  }
+
+  .settings-table td:first-child { color: var(--text); font-weight: 400; }
+  .settings-table tr:last-child td { border-bottom: none; }
+  .val-green { color: var(--green); font-weight: 500; }
+  .val-amber { color: var(--amber); font-weight: 500; }
+  .val-red { color: var(--red); font-weight: 500; }
+
+  .infobox {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .infobox-tip { background: var(--green-dim); border: 1px solid rgba(45,212,160,0.2); color: var(--muted2); }
+  .infobox-warn { background: var(--amber-dim); border: 1px solid rgba(245,166,35,0.2); color: var(--muted2); }
+  .infobox-info { background: rgba(79,127,255,0.08); border: 1px solid rgba(79,127,255,0.2); color: var(--muted2); }
+  .infobox-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 80px;
+  }
+
+  .doc-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .doc-link:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .doc-link-icon { font-size: 20px; flex-shrink: 0; }
+  .doc-link-text { font-size: 13px; color: var(--muted2); margin-top: 2px; }
+
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 32px;
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .footer-text { font-size: 13px; color: var(--muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .wrap { padding: 0 24px; }
+    .concept-grid { grid-template-columns: 1fr; }
+    .docs-grid { grid-template-columns: 1fr; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Karsten <span>Skåla Ek</span>.no</a>
+  <a href="index.html#lab" class="nav-back">← Tilbake til lab-prosjekter</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header fade-up">
+    <div class="breadcrumb">
+      <a href="index.html">Hjem</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="index.html#lab">Lab-prosjekter</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Azure Key Vault</span>
+    </div>
+    <h1 class="page-title">Azure Key Vault —<br>hemmeligheter, nøkler og sertifikater</h1>
+    <p class="page-subtitle">Opprettet Azure Key Vault i rg-lab-01 og lagret hemmeligheter sikkert. I stedet for hardkodede passord henter applikasjoner og scripts credentials direkte fra Key Vault via tilgangsstyring.</p>
+    <div class="meta-pills">
+      <span class="pill"><span class="pill-dot" style="background:var(--green)"></span>Fullført</span>
+      <span class="pill">Key Vault</span>
+      <span class="pill">Secrets</span>
+      <span class="pill">RBAC</span>
+      <span class="pill">AZ-104 / SC-300 pensum</span>
+    </div>
+  </div>
+
+  <div class="fade-up delay-1">
+
+    <!-- Konsept -->
+    <div class="concept-box">
+      <h3>Hva er Resource Locks og hvorfor bruker vi det?</h3>
+      <p style="font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:16px">Resource Locks hindrer at ressurser i Azure blir slettet eller endret ved en feil — selv av brukere med Owner-rolle. En lock overstyrer alle RBAC-tillatelser. Det er den siste forsvarslinjen mot menneskelige feil.</p>
+      <div class="concept-grid">
+        <div class="concept-item">
+          <div class="concept-item-label">Delete</div>
+          <div class="concept-item-text">Ressursen kan leses og endres, men ikke slettes. Den vanligste lock-typen i produksjon — beskytter mot utilsiktet sletting uten å hindre drift.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-label">ReadOnly</div>
+          <div class="concept-item-text">Ressursen kan kun leses — ingen endringer, ingen sletting. Brukes sjeldnere siden det blokkerer normal drift. Typisk brukt under frysperioder eller revisjoner.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-label">Arv nedover</div>
+          <div class="concept-item-text">En lock på ressursgruppe-nivå arves av alle ressurser inni. Du trenger ikke sette lock på hver enkelt ressurs.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-label">Hvem kan fjerne den?</div>
+          <div class="concept-item-text">Kun brukere med Microsoft.Authorization/locks/delete-rettighet — typisk Owner eller User Access Administrator. Contributor kan IKKE fjerne locks.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 1 -->
+    <div class="phase-heading">Steg 1 — Opprett Key Vault <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Opprett Key Vault i portalen</div>
+        <div class="step-body">
+          Key Vault opprettes under <strong>rg-lab-01</strong> slik at den arver tags og policies vi har satt opp. Velg <strong>Azure role-based access control (RBAC)</strong> som tilgangsmodell — dette er den anbefalte moderne tilnærmingen fremfor de gamle Access Policies.
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <tbody>
+            <tr><td>Subscription</td><td class="val-green">Nordframe-Lab</td><td>—</td></tr>
+            <tr><td>Resource group</td><td class="val-green">rg-lab-01</td><td>Arver tags og policies</td></tr>
+            <tr><td>Key vault name</td><td class="val-green">kv-lab-01</td><td>Globalt unikt navn — prefix kv- er CAF-konvensjon</td></tr>
+            <tr><td>Region</td><td class="val-green">Norway East</td><td>Samme som resten av lab-miljøet</td></tr>
+            <tr><td>Pricing tier</td><td class="val-green">Standard</td><td>Premium gir HSM-støtte — ikke nødvendig i lab</td></tr>
+            <tr><td>Permission model</td><td class="val-green">Azure role-based access control</td><td>Anbefalt — gir granulær tilgang via RBAC</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-warn">
+          <div class="infobox-icon">⚠️</div>
+          <div><strong>Soft-delete er aktivert som standard</strong> og kan ikke deaktiveres. Slettede secrets og Key Vaults beholdes i 90 dager. I produksjon er dette viktig å kjenne til — du kan ikke gjenbruke samme navn på en slettet Key Vault i samme periode.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 2 -->
+    <div class="phase-heading">Steg 2 — Gi deg selv tilgang via RBAC <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Tildel Key Vault Administrator-rollen</div>
+        <div class="step-body">
+          Med RBAC-modellen har ingen tilgang til Key Vault som standard — ikke engang Owner-rollen. Du må eksplisitt tildele en Key Vault-rolle til deg selv for å lese og skrive secrets.
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <tbody>
+            <tr><td>Scope</td><td class="val-green">kv-lab-01</td><td>Kun tilgang til denne Key Vault</td></tr>
+            <tr><td>Role</td><td class="val-green">Key Vault Administrator</td><td>Full tilgang til secrets, keys og certificates</td></tr>
+            <tr><td>Assign access to</td><td class="val-green">User, group, or service principal</td><td>—</td></tr>
+            <tr><td>Member</td><td class="val-green">KarstenEk@nordframe.onmicrosoft.com</td><td>Din bruker</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div><strong>Rollefordeling i produksjon:</strong> Bruk <strong>Key Vault Administrator</strong> for adminbrukere, <strong>Key Vault Secrets User</strong> for applikasjoner som kun skal lese secrets, og <strong>Key Vault Secrets Officer</strong> for de som skal opprette og administrere secrets.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 3 -->
+    <div class="phase-heading">Steg 3 — Opprett et Secret <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Lagre et testpassord som Secret</div>
+        <div class="step-body">
+          Vi lagrer et testpassord som et Secret i Key Vault. I et reelt scenario ville dette vært et databasepassord, API-nøkkel eller en connection string som applikasjoner henter ved oppstart.
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <tbody>
+            <tr><td>Upload options</td><td class="val-green">Manual</td><td>Skriv inn verdien direkte</td></tr>
+            <tr><td>Name</td><td class="val-green">lab-db-password</td><td>Beskrivende navn — brukes som referanse</td></tr>
+            <tr><td>Secret value</td><td class="val-green">P@ssw0rd-Lab-2026!</td><td>Testpassord — aldri bruk dette i produksjon</td></tr>
+            <tr><td>Set activation date</td><td>Ikke satt</td><td>Kan brukes for planlagte rotasjoner</td></tr>
+            <tr><td>Set expiration date</td><td>Ikke satt</td><td>I produksjon bør secrets ha utløpsdato</td></tr>
+            <tr><td>Enabled</td><td class="val-green">Yes</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div>Etter at secreten er opprettet kan du klikke på den og se <strong>Secret Identifier</strong> — dette er URLen applikasjoner bruker for å hente verdien. Den ser slik ut: <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent2)">https://kv-lab-01.vault.azure.net/secrets/lab-db-password/[version]</code></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 4 -->
+    <div class="phase-heading">Steg 4 — Hent Secret via PowerShell <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Les Secret-verdien med Az PowerShell</div>
+        <div class="step-body">
+          Vi verifiserer at tilgangen fungerer ved å hente secret-verdien via PowerShell. Dette simulerer hvordan en applikasjon eller et script ville hentet credentials ved kjøring.
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;font-family:var(--font-mono);font-size:13px;color:var(--muted2);line-height:1.8;margin-bottom:16px;overflow-x:auto">
+<span style="color:var(--muted)"><em># Koble til Azure</em></span><br>
+<span style="color:var(--accent2)">Connect-AzAccount</span><br>
+<br>
+<span style="color:var(--muted)"><em># Hent secret-objektet fra Key Vault</em></span><br>
+<span style="color:var(--text)">$secret = </span><span style="color:var(--accent2)">Get-AzKeyVaultSecret</span> <span style="color:var(--green)">-VaultName</span> <span style="color:var(--amber)">"kv-lab-01"</span> <span style="color:var(--green)">-Name</span> <span style="color:var(--amber)">"lab-db-password"</span><br>
+<br>
+<span style="color:var(--muted)"><em># Konverter til lesbar tekst (SecureString → plaintext)</em></span><br>
+<span style="color:var(--text)">$plaintext = </span><span style="color:var(--accent2)">ConvertFrom-SecureString</span> <span style="color:var(--green)">-SecureString</span> $secret.SecretValue <span style="color:var(--green)">-AsPlainText</span><br>
+<br>
+<span style="color:var(--muted)"><em># Vis verdien (aldri gjør dette i produksjon!)</em></span><br>
+<span style="color:var(--accent2)">Write-Host</span> <span style="color:var(--amber)">"Secret-verdi: $plaintext"</span>
+        </div>
+        <div class="infobox infobox-warn">
+          <div class="infobox-icon">⚠️</div>
+          <div><strong>Aldri skriv ut secret-verdier i produksjon</strong> — det havner i logger og terminal-historikk. I produksjon injiserer du verdien direkte i applikasjonskoden uten å vise den.</div>
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Kommando</th><th>Hva den gjør</th></tr></thead>
+          <tbody>
+            <tr><td>Get-AzKeyVaultSecret</td><td>Henter secret-objektet — verdien er kryptert som SecureString</td></tr>
+            <tr><td>ConvertFrom-SecureString -AsPlainText</td><td>Konverterer SecureString til lesbar tekst</td></tr>
+            <tr><td>$secret.SecretIdentifier</td><td>Viser full URI inkludert versjon</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="section-heading">Microsoft-dokumentasjon</h2>
+  <div class="docs-grid">
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/key-vault/general/overview" target="_blank" rel="noopener">
+      <div class="doc-link-icon">🔑</div>
+      <div>
+        <div>Azure Key Vault oversikt</div>
+        <div class="doc-link-text">Microsoft Learn — AZ-104 / SC-300</div>
+      </div>
+    </a>
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide" target="_blank" rel="noopener">
+      <div class="doc-link-icon">🛡️</div>
+      <div>
+        <div>Key Vault RBAC-guide</div>
+        <div class="doc-link-text">Microsoft Learn — AZ-104</div>
+      </div>
+    </a>
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/key-vault/secrets/quick-create-portal" target="_blank" rel="noopener">
+      <div class="doc-link-icon">🚀</div>
+      <div>
+        <div>Quickstart — Secret via portalen</div>
+        <div class="doc-link-text">Microsoft Learn — AZ-104</div>
+      </div>
+    </a>
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/powershell/module/az.keyvault/get-azkeyvaultsecret" target="_blank" rel="noopener">
+      <div class="doc-link-icon">💻</div>
+      <div>
+        <div>Get-AzKeyVaultSecret</div>
+        <div class="doc-link-text">PowerShell-referanse</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-text"><a href="index.html" style="color:inherit;text-decoration:none">← Tilbake til portefølje</a></div>
+  <div class="footer-text">Sist oppdatert mars 2026</div>
+</footer>
+
+</body>
+</html>
