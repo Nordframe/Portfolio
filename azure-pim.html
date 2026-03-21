@@ -417,12 +417,12 @@
       <span>PIM</span>
     </div>
     <h1 class="page-title">Privileged Identity Management —<br>just-in-time admin-tilgang</h1>
-    <p class="page-subtitle">Konfigurert PIM for å fjerne permanente admin-rettigheter. I stedet for å alltid ha Global Administrator aktivt, aktiveres rollen kun når det er nødvendig — med begrunnelse, tidsbegrensning og full audit trail.</p>
+    <p class="page-subtitle">Konfigurert PIM i Business Premium lab-tenant med Entra ID P2-prøvelisens. Satt opp group-based licensing og Eligible-assignment for Global Administrator. Avdekket viktig forskjell mellom permanent Active og Eligible i praksis.</p>
     <div class="meta-pills">
       <span class="pill"><span class="pill-dot" style="background:var(--green)"></span>Fullført</span>
       <span class="pill">PIM</span>
-      <span class="pill">Just-in-time</span>
-      <span class="pill">Zero Trust</span>
+      <span class="pill">Entra ID P2</span>
+      <span class="pill">Group-based licensing</span>
       <span class="pill">SC-300 pensum</span>
     </div>
   </div>
@@ -454,7 +454,7 @@
     </div>
 
     <!-- STEG 1 -->
-    <div class="phase-heading">Steg 1 — Gjør rollen Eligible i PIM <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 1 — Aktiver Entra ID P2 og group-based licensing <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -462,29 +462,50 @@
         <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">Legg til deg selv som Eligible for Global Administrator</div>
+        <div class="step-title">Aktiver Entra ID P2-prøvelisens</div>
         <div class="step-body">
-          I stedet for å ha Global Administrator som en permanent Active-rolle, gjør vi den Eligible. Det betyr at du kan aktivere den ved behov, men den er ikke aktiv til vanlig.
+          PIM krever <strong>Entra ID P2</strong>-lisens. Business Premium inkluderer kun P1. Vi aktiverte en 30-dagers gratis prøveperiode med 100 lisenser — uten automatisk fornyelse.
         </div>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div>Gå til: <strong>entra.microsoft.com → Identity Governance → Privileged Identity Management → Entra roles → Assignments → + Add assignments</strong></div>
+          <div>Gå til: <strong>entra.microsoft.com → Billing → Licenses → + Try/Buy → Microsoft Entra ID P2 → Free trial → Activate</strong></div>
+        </div>
+        <div class="infobox infobox-warn">
+          <div class="infobox-icon">⚠️</div>
+          <div>På jobben med M365 E5 er Entra ID P2 allerede inkludert — ingen aktivering nødvendig.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Sett opp group-based licensing</div>
+        <div class="step-body">
+          Best practice er å tildele lisenser via grupper, ikke direkte til brukere. Da er det lett å administrere — legg til eller fjern brukere fra gruppen, og lisensen følger automatisk med.
         </div>
         <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <thead><tr><th>Innstilling</th><th>Verdi</th></tr></thead>
           <tbody>
-            <tr><td>Select role</td><td class="val-green">Global Administrator</td><td>Eller en annen privilegert rolle du vil beskytte</td></tr>
-            <tr><td>Select member</td><td class="val-green">KarstenEk@nordframe.onmicrosoft.com</td><td>Din bruker</td></tr>
-            <tr><td>Assignment type</td><td class="val-green">Eligible</td><td>Kan aktiveres ved behov — ikke aktiv til vanlig</td></tr>
-            <tr><td>Assignment starts</td><td>I dag</td><td>—</td></tr>
-            <tr><td>Assignment ends</td><td>Valgfritt — sett gjerne 90 dager for lab</td><td>Permanent er mulig men ikke anbefalt</td></tr>
+            <tr><td>Group name</td><td class="val-green">grp-lic-entraid-p2</td></tr>
+            <tr><td>Group type</td><td class="val-green">Security</td></tr>
+            <tr><td>Description</td><td>Lisensgruppe for Microsoft Entra ID P2. Medlemmer tildeles automatisk P2-lisens som gir tilgang til PIM, Identity Protection og Access Reviews.</td></tr>
+            <tr><td>Lisens tildelt gruppen</td><td class="val-green">Microsoft Entra ID P2</td></tr>
+            <tr><td>Direktetildeling fjernet</td><td class="val-green">Ja — ryddig og sporbart</td></tr>
           </tbody>
         </table>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div><strong>Hvorfor group-based licensing?</strong> Direkte tildeling er vanskelig å holde oversikt over og lett å glemme ved offboarding. Med gruppe-basert tildeling er det bare å fjerne brukeren fra gruppen — lisensen trekkes tilbake automatisk.</div>
+        </div>
       </div>
     </div>
 
     <!-- STEG 2 -->
-    <div class="phase-heading">Steg 2 — Konfigurer rolle-innstillinger <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 2 — Sett opp Eligible assignment i PIM <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -492,29 +513,28 @@
         <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">Sett opp krav for aktivering av rollen</div>
+        <div class="step-title">Legg til Global Administrator som Eligible</div>
         <div class="step-body">
-          Under rolle-innstillinger bestemmer du hva som kreves når noen aktiverer rollen — begrunnelse, MFA, max varighet og eventuelt godkjenning.
+          I stedet for en permanent Active-rolle gjøres rollen Eligible — den er ikke aktiv til vanlig, men kan aktiveres ved behov med begrunnelse og MFA.
         </div>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div>Gå til: <strong>PIM → Entra roles → Roles → Global Administrator → Settings → Edit</strong></div>
+          <div>Gå til: <strong>PIM → Entra roles → Assignments → + Add assignments</strong></div>
         </div>
         <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Anbefalt verdi</th><th>Forklaring</th></tr></thead>
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
           <tbody>
-            <tr><td>Maximum activation duration</td><td class="val-green">8 timer</td><td>Maks tid rollen kan være aktiv per aktivering. Sett lavere i produksjon (1-4 timer)</td></tr>
-            <tr><td>On activation, require MFA</td><td class="val-green">Ja</td><td>Krever MFA-verifisering ved hver aktivering — viktig sikkerhetskrav</td></tr>
-            <tr><td>Require justification on activation</td><td class="val-green">Ja</td><td>Brukeren må oppgi begrunnelse — gir full sporbarhet i audit log</td></tr>
-            <tr><td>Require approval to activate</td><td>Nei (lab) / Ja (prod)</td><td>I produksjon bør privilegerte roller kreve godkjenning fra en annen admin</td></tr>
-            <tr><td>Require ticket information</td><td>Nei (lab)</td><td>I produksjon kan du kreve et ITSM-saksnummer</td></tr>
+            <tr><td>Select role</td><td class="val-green">Global Administrator</td><td>Eller en annen privilegert rolle</td></tr>
+            <tr><td>Select member</td><td class="val-green">KarstenEk@nordframe.onmicrosoft.com</td><td>—</td></tr>
+            <tr><td>Assignment type</td><td class="val-green">Eligible</td><td>Kan aktiveres ved behov — ikke aktiv til vanlig</td></tr>
+            <tr><td>Assignment ends</td><td class="val-green">90 dager</td><td>Permanent er mulig men ikke anbefalt</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
     <!-- STEG 3 -->
-    <div class="phase-heading">Steg 3 — Aktiver rollen just-in-time <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 3 — Konfigurer rolle-innstillinger <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -522,56 +542,53 @@
         <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">Aktiver Global Administrator-rollen</div>
+        <div class="step-title">Sett krav for aktivering</div>
         <div class="step-body">
-          Nå tester vi flyten — aktiverer rollen med begrunnelse og verifiserer at den er aktiv i en begrenset periode.
+          Under rolle-innstillinger bestemmer du hva som kreves når noen aktiverer rollen.
         </div>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div>Gå til: <strong>PIM → My roles → Entra roles → Eligible assignments → Activate</strong></div>
+          <div>Gå til: <strong>PIM → Entra roles → Roles → Global Administrator → Settings → Edit</strong></div>
         </div>
         <table class="settings-table">
-          <thead><tr><th>Felt</th><th>Verdi</th></tr></thead>
+          <thead><tr><th>Innstilling</th><th>Anbefalt</th><th>Forklaring</th></tr></thead>
           <tbody>
-            <tr><td>Activation duration</td><td class="val-green">1 time (lab)</td></tr>
-            <tr><td>Reason</td><td class="val-green">Lab-testing av PIM-flyt for AZ-104/SC-300 opplæring</td></tr>
+            <tr><td>Maximum activation duration</td><td class="val-green">8 timer</td><td>Sett lavere i produksjon (1-4 timer)</td></tr>
+            <tr><td>Require MFA on activation</td><td class="val-green">Ja</td><td>Viktig sikkerhetskrav</td></tr>
+            <tr><td>Require justification</td><td class="val-green">Ja</td><td>Full sporbarhet i audit log</td></tr>
+            <tr><td>Require approval</td><td>Nei (lab) / Ja (prod)</td><td>I produksjon bør privilegerte roller kreve godkjenning</td></tr>
           </tbody>
         </table>
-        <div class="infobox infobox-tip">
-          <div class="infobox-icon">💡</div>
-          <div>Etter aktivering ser du rollen under <strong>Active assignments</strong> med en nedtelling. Når tiden er ute deaktiveres rollen automatisk — du trenger ikke gjøre noe.</div>
-        </div>
       </div>
     </div>
 
-    <!-- STEG 4 -->
-    <div class="phase-heading">Steg 4 — Sjekk audit log <span class="phase-badge">Fullført</span></div>
+    <!-- ERFARINGER -->
+    <div class="phase-heading">Erfaringer underveis <span class="phase-badge">Viktig</span></div>
 
     <div class="step">
       <div class="step-left">
         <div class="step-num done">1</div>
       </div>
       <div class="step-content">
-        <div class="step-title">Verifiser at aktivering ble logget</div>
+        <div class="step-title">Permanent Active vs Eligible — en viktig distinksjon</div>
         <div class="step-body">
-          PIM logger alle aktiveringer, godkjenninger og endringer. Dette er kjernen i sporbarhet og compliance — alt er dokumentert med tidspunkt, bruker og begrunnelse.
-        </div>
-        <div class="infobox infobox-info">
-          <div class="infobox-icon">💡</div>
-          <div>Gå til: <strong>PIM → Entra roles → Audit history</strong> — her ser du alle aktiveringer med tidspunkt, bruker og begrunnelse.</div>
+          Da vi forsøkte å aktivere Global Administrator via PIM-flyten fikk vi beskjed om at rollen allerede var aktiv. Årsaken var at brukeren hadde <strong>to assignments</strong> — én Eligible vi nettopp opprettet, og én permanent Active fra før.
         </div>
         <table class="settings-table">
-          <thead><tr><th>Hva du ser i loggen</th><th>Beskrivelse</th></tr></thead>
+          <thead><tr><th>Assignment type</th><th>Hva det betyr</th><th>Risiko</th></tr></thead>
           <tbody>
-            <tr><td>Add member to role completed (PIM activation)</td><td class="val-green">Rollen ble aktivert</td></tr>
-            <tr><td>Initiator</td><td>Brukeren som aktiverte rollen</td></tr>
-            <tr><td>Justification</td><td>Begrunnelsen som ble oppgitt</td></tr>
-            <tr><td>Remove member from role (PIM activation ended)</td><td>Rollen ble deaktivert automatisk</td></tr>
+            <tr><td>Permanent Active</td><td>Rollen er alltid aktiv — ingen aktivering nødvendig</td><td class="val-red">Høy — kompromittert konto = full tilgang alltid</td></tr>
+            <tr><td>Time-bound Active</td><td>Aktiv i en begrenset periode</td><td class="val-amber">Middels</td></tr>
+            <tr><td>Eligible</td><td class="val-green">Kan aktiveres ved behov med MFA og begrunnelse</td><td class="val-green">Lav — begrenset eksponering</td></tr>
           </tbody>
         </table>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div><strong>På jobben</strong> er Global Administrator satt opp som Eligible for kun 2-3 personer. Ingen har permanent Active GA — nettopp for å begrense risikoen. Dette er best practice og anbefalt av NSM og Microsoft.</div>
+        </div>
         <div class="infobox infobox-warn">
           <div class="infobox-icon">⚠️</div>
-          <div><strong>På jobben</strong> — i offentlig sektor er dette audit trail-kravet kritisk. NSM grunnprinsipper og DORA-regelverket (for finanssektoren) krever sporbarhet på privilegert tilgang. Med E5 har dere PIM tilgjengelig i dag.</div>
+          <div>For å aktivere PIM-flyten i lab må den permanente Active-rollen fjernes eller konverteres til Eligible. I en lab-tenant med én bruker er det trygt — men vær obs på at du midlertidig mister GA-tilgang til du aktiverer via PIM.</div>
         </div>
       </div>
     </div>
@@ -601,10 +618,10 @@
         <div class="doc-link-text">Microsoft Learn — SC-300</div>
       </div>
     </a>
-    <a class="doc-link" href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-use-audit-log" target="_blank" rel="noopener">
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign" target="_blank" rel="noopener">
       <div class="doc-link-icon">📋</div>
       <div>
-        <div>PIM Audit history</div>
+        <div>Group-based licensing</div>
         <div class="doc-link-text">Microsoft Learn — SC-300</div>
       </div>
     </a>
