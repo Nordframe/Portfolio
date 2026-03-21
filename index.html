@@ -518,7 +518,7 @@
   }
 
   /* ── Certs ── */
-  #certs { padding-top: 140px; padding-bottom: 80px; }
+  #certs { padding-top: 96px; padding-bottom: 56px; }
 
   .certs-grid {
     display: grid;
@@ -612,7 +612,7 @@
   }
 
   /* ── Skills ── */
-  #skills { padding-top: 80px; padding-bottom: 80px; }
+  #skills { padding-top: 56px; padding-bottom: 56px; }
 
   .skills-grid {
     display: grid;
@@ -675,12 +675,12 @@
   .skill-card:hover .tag { border-color: var(--border2); color: var(--muted2); }
 
   /* ── Lab ── */
-  #lab { padding-top: 80px; padding-bottom: 80px; }
+  #lab { padding-top: 56px; padding-bottom: 56px; }
 
   .lab-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
   }
 
   .lab-card {
@@ -807,14 +807,30 @@
   /* No-link card */
   .lab-card-nolink {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px dashed var(--border);
     border-radius: 16px;
     overflow: hidden;
-    opacity: 0.6;
+    opacity: 0.45;
+    filter: grayscale(0.3);
+    position: relative;
+  }
+  .lab-card-nolink::after {
+    content: 'Kommer snart';
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
   }
 
   /* ── About ── */
-  #about { padding-top: 80px; padding-bottom: 140px; }
+  #about { padding-top: 56px; padding-bottom: 80px; }
 
   .about-grid {
     display: grid;
@@ -846,7 +862,7 @@
   }
 
   .meta-row:hover { border-color: var(--border2); }
-  .meta-key { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+  .meta-key { color: var(--muted2); font-family: var(--font-mono); font-size: 12px; }
   .meta-val { color: var(--text); font-weight: 500; }
 
   /* ── Footer ── */
@@ -884,6 +900,10 @@
   }
 
   /* ── Responsive ── */
+  @media (max-width: 1100px) {
+    .lab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
   @media (max-width: 768px) {
     nav { padding: 0 24px; }
     .nav-links { display: none; }
@@ -893,6 +913,7 @@
     .about-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
     .lab-grid { grid-template-columns: 1fr; }
+    h2 { font-size: 28px; }
   }
 </style>
 </head>
@@ -1134,6 +1155,66 @@
           <div class="lab-meta-item"><div class="dot-blue"></div> Bastion</div>
           <div class="lab-meta-item"><div class="dot-green"></div> Nettverk</div>
           <div class="lab-meta-item"><div class="dot-amber"></div> AZ-104 / SC-300</div>
+        </div>
+      </div>
+      <div class="lab-card-arrow">Les mer →</div>
+    </a>
+
+    <a href="azure-resource-locks.html" class="lab-card reveal reveal-delay-4">
+      <div class="lab-card-accent beginner"></div>
+      <div class="lab-card-header">
+        <div>
+          <div class="lab-card-title">Resource Locks og DenyAction</div>
+          <div class="lab-card-sub">locks · denyaction · governance</div>
+        </div>
+        <span class="lab-difficulty diff-beginner">Nybegynner</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="lab-card-desc">Satt opp Delete-locks og DenyAction-policy for å beskytte lab-miljøet mot utilsiktet sletting.</div>
+        <div class="lab-meta">
+          <div class="lab-meta-item"><div class="dot-green"></div> Resource Locks</div>
+          <div class="lab-meta-item"><div class="dot-blue"></div> DenyAction</div>
+          <div class="lab-meta-item"><div class="dot-amber"></div> AZ-104</div>
+        </div>
+      </div>
+      <div class="lab-card-arrow">Les mer →</div>
+    </a>
+
+    <a href="azure-key-vault.html" class="lab-card reveal reveal-delay-1">
+      <div class="lab-card-accent beginner"></div>
+      <div class="lab-card-header">
+        <div>
+          <div class="lab-card-title">Azure Key Vault — hemmeligheter</div>
+          <div class="lab-card-sub">kv-nf-lab-01 · secrets · rbac</div>
+        </div>
+        <span class="lab-difficulty diff-beginner">Nybegynner</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="lab-card-desc">Opprettet Key Vault med RBAC-modellen, lagret secrets og hentet dem via PowerShell. Ingen hardkodede passord.</div>
+        <div class="lab-meta">
+          <div class="lab-meta-item"><div class="dot-blue"></div> Key Vault</div>
+          <div class="lab-meta-item"><div class="dot-green"></div> Secrets</div>
+          <div class="lab-meta-item"><div class="dot-amber"></div> AZ-104 / SC-300</div>
+        </div>
+      </div>
+      <div class="lab-card-arrow">Les mer →</div>
+    </a>
+
+    <a href="azure-pim.html" class="lab-card reveal reveal-delay-2">
+      <div class="lab-card-accent intermediate"></div>
+      <div class="lab-card-header">
+        <div>
+          <div class="lab-card-title">PIM — just-in-time tilgang</div>
+          <div class="lab-card-sub">privileged identity management · p2</div>
+        </div>
+        <span class="lab-difficulty diff-intermediate">Middels</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="lab-card-desc">Konfigurert PIM og group-based licensing. Eligible-roller aktiveres kun ved behov med MFA og begrunnelse.</div>
+        <div class="lab-meta">
+          <div class="lab-meta-item"><div class="dot-blue"></div> PIM</div>
+          <div class="lab-meta-item"><div class="dot-green"></div> Zero Trust</div>
+          <div class="lab-meta-item"><div class="dot-amber"></div> SC-300</div>
         </div>
       </div>
       <div class="lab-card-arrow">Les mer →</div>
