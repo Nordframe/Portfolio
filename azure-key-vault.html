@@ -471,7 +471,7 @@
           <tbody>
             <tr><td>Subscription</td><td class="val-green">Nordframe-Lab</td><td>—</td></tr>
             <tr><td>Resource group</td><td class="val-green">rg-lab-01</td><td>Arver tags og policies</td></tr>
-            <tr><td>Key vault name</td><td class="val-green">kv-lab-01</td><td>Globalt unikt navn — prefix kv- er CAF-konvensjon</td></tr>
+            <tr><td>Key vault name</td><td class="val-green">kv-nf-lab-01</td><td>Globalt unikt navn — prefix kv- er CAF-konvensjon</td></tr>
             <tr><td>Region</td><td class="val-green">Norway East</td><td>Samme som resten av lab-miljøet</td></tr>
             <tr><td>Pricing tier</td><td class="val-green">Standard</td><td>Premium gir HSM-støtte — ikke nødvendig i lab</td></tr>
             <tr><td>Permission model</td><td class="val-green">Azure role-based access control</td><td>Anbefalt — gir granulær tilgang via RBAC</td></tr>
@@ -500,7 +500,7 @@
         <table class="settings-table">
           <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
           <tbody>
-            <tr><td>Scope</td><td class="val-green">kv-lab-01</td><td>Kun tilgang til denne Key Vault</td></tr>
+            <tr><td>Scope</td><td class="val-green">kv-nf-lab-01</td><td>Kun tilgang til denne Key Vault</td></tr>
             <tr><td>Role</td><td class="val-green">Key Vault Administrator</td><td>Full tilgang til secrets, keys og certificates</td></tr>
             <tr><td>Assign access to</td><td class="val-green">User, group, or service principal</td><td>—</td></tr>
             <tr><td>Member</td><td class="val-green">KarstenEk@nordframe.onmicrosoft.com</td><td>Din bruker</td></tr>
@@ -539,49 +539,34 @@
         </table>
         <div class="infobox infobox-tip">
           <div class="infobox-icon">💡</div>
-          <div>Etter at secreten er opprettet kan du klikke på den og se <strong>Secret Identifier</strong> — dette er URLen applikasjoner bruker for å hente verdien. Den ser slik ut: <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent2)">https://kv-lab-01.vault.azure.net/secrets/lab-db-password/[version]</code></div>
+          <div>Etter at secreten er opprettet kan du klikke på den og se <strong>Secret Identifier</strong> — dette er URLen applikasjoner bruker for å hente verdien. Den ser slik ut: <code style="font-family:var(--font-mono);font-size:12px;color:var(--accent2)">https://kv-nf-lab-01.vault.azure.net/secrets/lab-db-password/[version]</code></div>
         </div>
       </div>
     </div>
 
     <!-- STEG 4 -->
-    <div class="phase-heading">Steg 4 — Hent Secret via PowerShell <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 4 — Verifiser via PowerShell <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
         <div class="step-num done">1</div>
-        <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">Les Secret-verdien med Az PowerShell</div>
+        <div class="step-title">Secret hentet og verifisert</div>
         <div class="step-body">
-          Vi verifiserer at tilgangen fungerer ved å hente secret-verdien via PowerShell. Dette simulerer hvordan en applikasjon eller et script ville hentet credentials ved kjøring.
+          Secret-verdien ble hentet fra Key Vault via Az PowerShell og verifisert. PowerShell-kommandoene er dokumentert i DevOps Wiki under PowerShell-referansen.
         </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;font-family:var(--font-mono);font-size:13px;color:var(--muted2);line-height:1.8;margin-bottom:16px;overflow-x:auto">
-<span style="color:var(--muted)"><em># Koble til Azure</em></span><br>
-<span style="color:var(--accent2)">Connect-AzAccount</span><br>
-<br>
-<span style="color:var(--muted)"><em># Hent secret-objektet fra Key Vault</em></span><br>
-<span style="color:var(--text)">$secret = </span><span style="color:var(--accent2)">Get-AzKeyVaultSecret</span> <span style="color:var(--green)">-VaultName</span> <span style="color:var(--amber)">"kv-lab-01"</span> <span style="color:var(--green)">-Name</span> <span style="color:var(--amber)">"lab-db-password"</span><br>
-<br>
-<span style="color:var(--muted)"><em># Konverter til lesbar tekst (SecureString → plaintext)</em></span><br>
-<span style="color:var(--text)">$plaintext = </span><span style="color:var(--accent2)">ConvertFrom-SecureString</span> <span style="color:var(--green)">-SecureString</span> $secret.SecretValue <span style="color:var(--green)">-AsPlainText</span><br>
-<br>
-<span style="color:var(--muted)"><em># Vis verdien (aldri gjør dette i produksjon!)</em></span><br>
-<span style="color:var(--accent2)">Write-Host</span> <span style="color:var(--amber)">"Secret-verdi: $plaintext"</span>
-        </div>
+        <table class="settings-table">
+          <thead><tr><th>Test</th><th>Resultat</th></tr></thead>
+          <tbody>
+            <tr><td>Get-AzKeyVaultSecret på lab-db-password</td><td class="val-green">Returnerte SecureString-objekt</td></tr>
+            <tr><td>Dekryptert til plaintext</td><td class="val-green">P@ssw0rd-Lab-2026! — korrekt verdi</td></tr>
+          </tbody>
+        </table>
         <div class="infobox infobox-warn">
           <div class="infobox-icon">⚠️</div>
           <div><strong>Aldri skriv ut secret-verdier i produksjon</strong> — det havner i logger og terminal-historikk. I produksjon injiserer du verdien direkte i applikasjonskoden uten å vise den.</div>
         </div>
-        <table class="settings-table">
-          <thead><tr><th>Kommando</th><th>Hva den gjør</th></tr></thead>
-          <tbody>
-            <tr><td>Get-AzKeyVaultSecret</td><td>Henter secret-objektet — verdien er kryptert som SecureString</td></tr>
-            <tr><td>ConvertFrom-SecureString -AsPlainText</td><td>Konverterer SecureString til lesbar tekst</td></tr>
-            <tr><td>$secret.SecretIdentifier</td><td>Viser full URI inkludert versjon</td></tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
