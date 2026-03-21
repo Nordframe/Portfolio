@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privileged Identity Management — Karsten Skåla Ek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #1a2235;
+    --surface2: #202c42;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8edf5;
+    --muted: #6b7a99;
+    --muted2: #8a9bbf;
+    --accent: #4f7fff;
+    --accent2: #6b96ff;
+    --green: #2dd4a0;
+    --green-dim: rgba(45,212,160,0.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --red: #f56565;
+    --red-dim: rgba(245,101,101,0.12);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,127,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,127,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-back:hover { color: var(--text); }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  .page-header {
+    padding-top: 112px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 64px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+  }
+
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent2); }
+  .breadcrumb-sep { color: var(--border2); }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  .page-subtitle {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--muted2);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    background: var(--surface);
+  }
+
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  .concept-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 48px;
+  }
+
+  .concept-box h3 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .concept-item {
+    padding: 14px 16px;
+    background: var(--surface2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .concept-item-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 6px;
+  }
+
+  .concept-item-text {
+    font-size: 13px;
+    color: var(--muted2);
+    line-height: 1.55;
+  }
+
+  .phase-heading {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 32px;
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(45,212,160,0.2);
+  }
+
+  .step { display: flex; gap: 28px; }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  .step-num.done {
+    background: var(--green-dim);
+    border-color: rgba(45,212,160,0.3);
+    color: var(--green);
+  }
+
+  .step-line {
+    width: 1px;
+    flex: 1;
+    min-height: 24px;
+    background: var(--border);
+    margin: 8px 0;
+  }
+
+  .step-content { padding-bottom: 48px; flex: 1; }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding-top: 4px;
+  }
+
+  .step-body {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--muted2);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+
+  .step-body strong { color: var(--text); font-weight: 500; }
+
+  .settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .settings-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted2);
+    vertical-align: top;
+  }
+
+  .settings-table td:first-child { color: var(--text); font-weight: 400; }
+  .settings-table tr:last-child td { border-bottom: none; }
+  .val-green { color: var(--green); font-weight: 500; }
+  .val-amber { color: var(--amber); font-weight: 500; }
+  .val-red { color: var(--red); font-weight: 500; }
+
+  .infobox {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .infobox-tip { background: var(--green-dim); border: 1px solid rgba(45,212,160,0.2); color: var(--muted2); }
+  .infobox-warn { background: var(--amber-dim); border: 1px solid rgba(245,166,35,0.2); color: var(--muted2); }
+  .infobox-info { background: rgba(79,127,255,0.08); border: 1px solid rgba(79,127,255,0.2); color: var(--muted2); }
+  .infobox-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 80px;
+  }
+
+  .doc-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .doc-link:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .doc-link-icon { font-size: 20px; flex-shrink: 0; }
+  .doc-link-text { font-size: 13px; color: var(--muted2); margin-top: 2px; }
+
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 32px;
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .footer-text { font-size: 13px; color: var(--muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .wrap { padding: 0 24px; }
+    .concept-grid { grid-template-columns: 1fr; }
+    .docs-grid { grid-template-columns: 1fr; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Karsten <span>Skåla Ek</span>.no</a>
+  <a href="index.html#lab" class="nav-back">← Tilbake til lab-prosjekter</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-header fade-up">
+    <div class="breadcrumb">
+      <a href="index.html">Hjem</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="index.html#lab">Lab-prosjekter</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>PIM</span>
+    </div>
+    <h1 class="page-title">Privileged Identity Management —<br>just-in-time admin-tilgang</h1>
+    <p class="page-subtitle">Konfigurert PIM for å fjerne permanente admin-rettigheter. I stedet for å alltid ha Global Administrator aktivt, aktiveres rollen kun når det er nødvendig — med begrunnelse, tidsbegrensning og full audit trail.</p>
+    <div class="meta-pills">
+      <span class="pill"><span class="pill-dot" style="background:var(--green)"></span>Fullført</span>
+      <span class="pill">PIM</span>
+      <span class="pill">Just-in-time</span>
+      <span class="pill">Zero Trust</span>
+      <span class="pill">SC-300 pensum</span>
+    </div>
+  </div>
+
+  <div class="fade-up delay-1">
+
+    <!-- Konsept -->
+    <div class="concept-box">
+      <h3>Hva er Resource Locks og hvorfor bruker vi det?</h3>
+      <p style="font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:16px">Resource Locks hindrer at ressurser i Azure blir slettet eller endret ved en feil — selv av brukere med Owner-rolle. En lock overstyrer alle RBAC-tillatelser. Det er den siste forsvarslinjen mot menneskelige feil.</p>
+      <div class="concept-grid">
+        <div class="concept-item">
+          <div class="concept-item-label">Delete</div>
+          <div class="concept-item-text">Ressursen kan leses og endres, men ikke slettes. Den vanligste lock-typen i produksjon — beskytter mot utilsiktet sletting uten å hindre drift.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-label">ReadOnly</div>
+          <div class="concept-item-text">Ressursen kan kun leses — ingen endringer, ingen sletting. Brukes sjeldnere siden det blokkerer normal drift. Typisk brukt under frysperioder eller revisjoner.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-label">Arv nedover</div>
+          <div class="concept-item-text">En lock på ressursgruppe-nivå arves av alle ressurser inni. Du trenger ikke sette lock på hver enkelt ressurs.</div>
+        </div>
+        <div class="concept-item">
+          <div class="concept-item-label">Hvem kan fjerne den?</div>
+          <div class="concept-item-text">Kun brukere med Microsoft.Authorization/locks/delete-rettighet — typisk Owner eller User Access Administrator. Contributor kan IKKE fjerne locks.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 1 -->
+    <div class="phase-heading">Steg 1 — Gjør rollen Eligible i PIM <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Legg til deg selv som Eligible for Global Administrator</div>
+        <div class="step-body">
+          I stedet for å ha Global Administrator som en permanent Active-rolle, gjør vi den Eligible. Det betyr at du kan aktivere den ved behov, men den er ikke aktiv til vanlig.
+        </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div>Gå til: <strong>entra.microsoft.com → Identity Governance → Privileged Identity Management → Entra roles → Assignments → + Add assignments</strong></div>
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <tbody>
+            <tr><td>Select role</td><td class="val-green">Global Administrator</td><td>Eller en annen privilegert rolle du vil beskytte</td></tr>
+            <tr><td>Select member</td><td class="val-green">KarstenEk@nordframe.onmicrosoft.com</td><td>Din bruker</td></tr>
+            <tr><td>Assignment type</td><td class="val-green">Eligible</td><td>Kan aktiveres ved behov — ikke aktiv til vanlig</td></tr>
+            <tr><td>Assignment starts</td><td>I dag</td><td>—</td></tr>
+            <tr><td>Assignment ends</td><td>Valgfritt — sett gjerne 90 dager for lab</td><td>Permanent er mulig men ikke anbefalt</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STEG 2 -->
+    <div class="phase-heading">Steg 2 — Konfigurer rolle-innstillinger <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Sett opp krav for aktivering av rollen</div>
+        <div class="step-body">
+          Under rolle-innstillinger bestemmer du hva som kreves når noen aktiverer rollen — begrunnelse, MFA, max varighet og eventuelt godkjenning.
+        </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div>Gå til: <strong>PIM → Entra roles → Roles → Global Administrator → Settings → Edit</strong></div>
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Anbefalt verdi</th><th>Forklaring</th></tr></thead>
+          <tbody>
+            <tr><td>Maximum activation duration</td><td class="val-green">8 timer</td><td>Maks tid rollen kan være aktiv per aktivering. Sett lavere i produksjon (1-4 timer)</td></tr>
+            <tr><td>On activation, require MFA</td><td class="val-green">Ja</td><td>Krever MFA-verifisering ved hver aktivering — viktig sikkerhetskrav</td></tr>
+            <tr><td>Require justification on activation</td><td class="val-green">Ja</td><td>Brukeren må oppgi begrunnelse — gir full sporbarhet i audit log</td></tr>
+            <tr><td>Require approval to activate</td><td>Nei (lab) / Ja (prod)</td><td>I produksjon bør privilegerte roller kreve godkjenning fra en annen admin</td></tr>
+            <tr><td>Require ticket information</td><td>Nei (lab)</td><td>I produksjon kan du kreve et ITSM-saksnummer</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STEG 3 -->
+    <div class="phase-heading">Steg 3 — Aktiver rollen just-in-time <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Aktiver Global Administrator-rollen</div>
+        <div class="step-body">
+          Nå tester vi flyten — aktiverer rollen med begrunnelse og verifiserer at den er aktiv i en begrenset periode.
+        </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div>Gå til: <strong>PIM → My roles → Entra roles → Eligible assignments → Activate</strong></div>
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Felt</th><th>Verdi</th></tr></thead>
+          <tbody>
+            <tr><td>Activation duration</td><td class="val-green">1 time (lab)</td></tr>
+            <tr><td>Reason</td><td class="val-green">Lab-testing av PIM-flyt for AZ-104/SC-300 opplæring</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div>Etter aktivering ser du rollen under <strong>Active assignments</strong> med en nedtelling. Når tiden er ute deaktiveres rollen automatisk — du trenger ikke gjøre noe.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 4 -->
+    <div class="phase-heading">Steg 4 — Sjekk audit log <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Verifiser at aktivering ble logget</div>
+        <div class="step-body">
+          PIM logger alle aktiveringer, godkjenninger og endringer. Dette er kjernen i sporbarhet og compliance — alt er dokumentert med tidspunkt, bruker og begrunnelse.
+        </div>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div>Gå til: <strong>PIM → Entra roles → Audit history</strong> — her ser du alle aktiveringer med tidspunkt, bruker og begrunnelse.</div>
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Hva du ser i loggen</th><th>Beskrivelse</th></tr></thead>
+          <tbody>
+            <tr><td>Add member to role completed (PIM activation)</td><td class="val-green">Rollen ble aktivert</td></tr>
+            <tr><td>Initiator</td><td>Brukeren som aktiverte rollen</td></tr>
+            <tr><td>Justification</td><td>Begrunnelsen som ble oppgitt</td></tr>
+            <tr><td>Remove member from role (PIM activation ended)</td><td>Rollen ble deaktivert automatisk</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-warn">
+          <div class="infobox-icon">⚠️</div>
+          <div><strong>På jobben</strong> — i offentlig sektor er dette audit trail-kravet kritisk. NSM grunnprinsipper og DORA-regelverket (for finanssektoren) krever sporbarhet på privilegert tilgang. Med E5 har dere PIM tilgjengelig i dag.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="section-heading">Microsoft-dokumentasjon</h2>
+  <div class="docs-grid">
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure" target="_blank" rel="noopener">
+      <div class="doc-link-icon">🔐</div>
+      <div>
+        <div>PIM oversikt</div>
+        <div class="doc-link-text">Microsoft Learn — SC-300</div>
+      </div>
+    </a>
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-add-role-to-user" target="_blank" rel="noopener">
+      <div class="doc-link-icon">👤</div>
+      <div>
+        <div>Tildel Entra-roller i PIM</div>
+        <div class="doc-link-text">Microsoft Learn — SC-300</div>
+      </div>
+    </a>
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-activate-role" target="_blank" rel="noopener">
+      <div class="doc-link-icon">⚡</div>
+      <div>
+        <div>Aktiver en rolle i PIM</div>
+        <div class="doc-link-text">Microsoft Learn — SC-300</div>
+      </div>
+    </a>
+    <a class="doc-link" href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-use-audit-log" target="_blank" rel="noopener">
+      <div class="doc-link-icon">📋</div>
+      <div>
+        <div>PIM Audit history</div>
+        <div class="doc-link-text">Microsoft Learn — SC-300</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-text"><a href="index.html" style="color:inherit;text-decoration:none">← Tilbake til portefølje</a></div>
+  <div class="footer-text">Sist oppdatert mars 2026</div>
+</footer>
+
+</body>
+</html>
