@@ -464,174 +464,7 @@
       <div class="step-content">
         <div class="step-title">Opprett Storage Account i portalen</div>
         <div class="step-body">
-          Gå til <strong>portal.azure.com → Create a resource → Storage account</strong>. Storage Account-navnet må være globalt unikt på tvers av hele Azure og kan kun inneholde små bokstaver og tall.
-        </div>
-        <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
-          <tbody>
-            <tr><td>Resource group</td><td class="val-green">rg-lab-01</td><td>Arver tags og policies</td></tr>
-            <tr><td>Storage account name</td><td class="val-green">stnflab01</td><td>Globalt unikt. Prefix st- er CAF-konvensjon. Kun lowercase + tall</td></tr>
-            <tr><td>Region</td><td class="val-green">Norway East</td><td>Samme som resten av lab-miljøet</td></tr>
-            <tr><td>Performance</td><td class="val-green">Standard</td><td>Premium gir lavere latency — ikke nødvendig i lab</td></tr>
-            <tr><td>Redundancy</td><td class="val-green">LRS (Locally Redundant)</td><td>3 kopier i samme datasenter. Billigst — greit for lab. Bruk ZRS i prod</td></tr>
-          </tbody>
-        </table>
-        <div class="infobox infobox-info">
-          <div class="infobox-icon">💡</div>
-          <div><strong>Advanced-fanen:</strong> La Secure transfer required være på (default). Dette tvinger HTTPS på alle forbindelser. Slå gjerne på <strong>Enable blob public access</strong> for lab-formål — da kan du teste offentlige containere.</div>
-        </div>
-        <div class="infobox infobox-warn">
-          <div class="infobox-icon">⚠️</div>
-          <div>Husk å legge til tags i Tags-fanen — Azure Policy fra Lab 2 blokkerer ellers opprettelsen.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEG 2 -->
-    <div class="phase-heading">Steg 2 — Blob Storage <span class="phase-badge">Fullført</span></div>
-
-    <div class="step">
-      <div class="step-left">
-        <div class="step-num done">1</div>
-        <div class="step-line"></div>
-      </div>
-      <div class="step-content">
-        <div class="step-title">Opprett en container og last opp en fil</div>
-        <div class="step-body">
-          En <strong>container</strong> i Blob Storage er som en mappe — men flat, uten hierarki. Filer kalles <strong>blobs</strong>. Vi oppretter en container, setter tilgangsnivå og tester offentlig URL.
-        </div>
-        <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
-          <tbody>
-            <tr><td>Container name</td><td class="val-green">lab-filer</td><td>Kun lowercase, tall og bindestrek</td></tr>
-            <tr><td>Public access level</td><td class="val-green">Blob</td><td>Enkeltfiler kan leses offentlig, men ikke liste innhold. Privat = ingen offentlig tilgang</td></tr>
-          </tbody>
-        </table>
-        <div class="infobox infobox-tip">
-          <div class="infobox-icon">💡</div>
-          <div>Last opp en testfil (f.eks. en .txt eller .png) → klikk på filen → kopier <strong>URL</strong> → åpne i nettleser. Med Blob-tilgang skal filen åpne offentlig. Med Private-tilgang får du 403 Forbidden.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEG 3 -->
-    <div class="phase-heading">Steg 3 — Azure Files <span class="phase-badge">Fullført</span></div>
-
-    <div class="step">
-      <div class="step-left">
-        <div class="step-num done">1</div>
-        <div class="step-line"></div>
-      </div>
-      <div class="step-content">
-        <div class="step-title">Opprett en File Share og koble til som nettverksdisk</div>
-        <div class="step-body">
-          Azure Files lar deg montere en skybasert fileshare som en nettverksdisk (Z:, Y: osv.) — akkurat som en on-premises filserver. Kommuniserer over SMB-protokollen på port 445.
-        </div>
-        <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
-          <tbody>
-            <tr><td>Name</td><td class="val-green">lab-share</td><td>—</td></tr>
-            <tr><td>Tier</td><td class="val-green">Transaction optimized</td><td>Billigst — greit for lab. Hot er raskere men dyrere</td></tr>
-            <tr><td>Quota</td><td class="val-green">1 GB</td><td>Maks størrelse på fileshare</td></tr>
-          </tbody>
-        </table>
-        <div class="infobox infobox-info">
-          <div class="infobox-icon">💡</div>
-          <div>For å koble til: <strong>lab-share → Connect → Windows</strong> — Azure genererer et PowerShell-script som monterer disken automatisk med riktig Access Key. Kjør scriptet i PowerShell på din PC.</div>
-        </div>
-        <div class="infobox infobox-warn">
-          <div class="infobox-icon">⚠️</div>
-          <div><strong>Port 445 må være åpen</strong> ut fra din PC for at SMB skal fungere. På jobbnett er denne ofte blokkert av brannmur. Test hjemmefra eller fra vm-lab-01 via Bastion.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEG 4 -->
-    <div class="phase-heading">Steg 4 — Tilgangsstyring og SAS-token <span class="phase-badge">Fullført</span></div>
-
-    <div class="step">
-      <div class="step-left">
-        <div class="step-num done">1</div>
-        <div class="step-line"></div>
-      </div>
-      <div class="step-content">
-        <div class="step-title">Generer et SAS-token for begrenset tilgang</div>
-        <div class="step-body">
-          Et <strong>SAS-token (Shared Access Signature)</strong> gir begrenset, tidsbegrenset tilgang til en spesifikk ressurs — uten å dele Access Key. Brukes når du vil gi en ekstern part midlertidig lesetilgang til én fil eller container.
-        </div>
-        <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Anbefalt verdi</th><th>Forklaring</th></tr></thead>
-          <tbody>
-            <tr><td>Permissions</td><td class="val-green">Read</td><td>Kun lesing — aldri gi mer enn nødvendig</td></tr>
-            <tr><td>Start time</td><td>Nå</td><td>—</td></tr>
-            <tr><td>Expiry time</td><td class="val-green">1 time (lab)</td><td>I produksjon: kortest mulig levetid</td></tr>
-            <tr><td>Allowed protocols</td><td class="val-green">HTTPS only</td><td>Aldri HTTP</td></tr>
-          </tbody>
-        </table>
-        <div class="infobox infobox-tip">
-          <div class="infobox-icon">💡</div>
-          <div><strong>Tre tilgangsmetoder — sammenligning:</strong><br>
-          <strong>Access Keys</strong> — full tilgang til alt. Del aldri. Roter jevnlig.<br>
-          <strong>SAS-token</strong> — begrenset tilgang med utløpsdato. Bruk for ekstern deling.<br>
-          <strong>RBAC</strong> — anbefalt for brukere og applikasjoner. Granulær og sporbar.</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <h2 class="section-heading">Microsoft-dokumentasjon</h2>
-  <div class="docs-grid">
-    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview" target="_blank" rel="noopener">
-      <div class="doc-link-icon">💾</div>
-      <div>
-        <div>Storage Account oversikt</div>
-        <div class="doc-link-text">Microsoft Learn — AZ-104</div>
-      </div>
-    </a>
-    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview" target="_blank" rel="noopener">
-      <div class="doc-link-icon">📦</div>
-      <div>
-        <div>Blob Storage oversikt</div>
-        <div class="doc-link-text">Microsoft Learn — AZ-104</div>
-      </div>
-    </a>
-    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction" target="_blank" rel="noopener">
-      <div class="doc-link-icon">📁</div>
-      <div>
-        <div>Azure Files oversikt</div>
-        <div class="doc-link-text">Microsoft Learn — AZ-104</div>
-      </div>
-    </a>
-    <a class="doc-link" href="https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview" target="_blank" rel="noopener">
-      <div class="doc-link-icon">🔑</div>
-      <div>
-        <div>SAS-tokens oversikt</div>
-        <div class="doc-link-text">Microsoft Learn — AZ-104</div>
-      </div>
-    </a>
-  </div>
-
-</div>
-
-<footer>
-  <div class="footer-text"><a href="index.html" style="color:inherit;text-decoration:none">← Tilbake til portefølje</a></div>
-  <div class="footer-text">Sist oppdatert mars 2026</div>
-</footer>
-
-</body>
-</html    <!-- STEG 1 -->
-    <div class="phase-heading">Steg 1 — Opprett Storage Account <span class="phase-badge">Fullført</span></div>
-
-    <div class="step">
-      <div class="step-left">
-        <div class="step-num done">1</div>
-        <div class="step-line"></div>
-      </div>
-      <div class="step-content">
-        <div class="step-title">Opprett Storage Account i portalen</div>
-        <div class="step-body">
-          Gå til <strong>portal.azure.com → Create a resource → Storage account</strong>. Storage Account-navnene er globalt unike på tvers av hele Azure — kun lowercase bokstaver og tall, 3-24 tegn.
+          Gå til <strong>portal.azure.com → Create a resource → Storage account</strong>. Storage Account-navnene er globalt unike på tvers av hele Azure — kun lowercase bokstaver og tall, 3-24 tegn, ingen bindestrek.
         </div>
         <table class="settings-table">
           <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
@@ -639,44 +472,18 @@
             <tr><td>Resource group</td><td class="val-green">rg-lab-01</td><td>Arver tags og policies</td></tr>
             <tr><td>Storage account name</td><td class="val-green">stnflab01</td><td>Globalt unikt, kun lowercase + tall, ingen bindestrek</td></tr>
             <tr><td>Region</td><td class="val-green">Norway East</td><td>Samme som resten av lab-miljøet</td></tr>
+            <tr><td>Primary service</td><td class="val-green">Azure Blob Storage or Azure Data Lake Gen2</td><td>For objektlagring — det vanligste valget</td></tr>
             <tr><td>Performance</td><td class="val-green">Standard</td><td>Premium gir lavere latency — ikke nødvendig i lab</td></tr>
-            <tr><td>Redundancy</td><td class="val-green">LRS (Locally Redundant Storage)</td><td>3 kopier i samme datasenter. Billigste alternativ — greit for lab</td></tr>
+            <tr><td>Redundancy</td><td class="val-green">LRS (Locally Redundant Storage)</td><td>3 kopier i samme datasenter. Billigste alternativ</td></tr>
           </tbody>
         </table>
         <div class="infobox infobox-info">
           <div class="infobox-icon">💡</div>
-          <div><strong>Redundans-oversikt:</strong> LRS (3 kopier, 1 datasenter) → ZRS (3 kopier, 3 soner) → GRS (6 kopier, 2 regioner) → GZRS (kombinert). I produksjon med offentlig sektor bør du vurdere minst ZRS for kritiske data.</div>
+          <div><strong>Redundans-oversikt:</strong> LRS (3 kopier, 1 datasenter) → ZRS (3 soner) → GRS (2 regioner) → GZRS (kombinert). I offentlig sektor bør du vurdere minst ZRS for kritiske data.</div>
         </div>
         <div class="infobox infobox-warn">
           <div class="infobox-icon">⚠️</div>
-          <div>Husk <strong>Tags-fanen</strong> — legg til environment=lab, owner=Karsten, purpose=training. Azure Policy fra Lab 2 blokkerer ellers opprettelsen.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEG 2 -->
-    <div class="phase-heading">Steg 2 — Blob Storage <span class="phase-badge">Fullført</span></div>
-
-    <div class="step">
-      <div class="step-left">
-        <div class="step-num done">1</div>
-        <div class="step-line"></div>
-      </div>
-      <div class="step-content">
-        <div class="step-title">Opprett container og last opp en fil</div>
-        <div class="step-body">
-          Blob Storage organiseres i <strong>containers</strong> — tenk på dem som mapper. Inne i containers lagres individuelle filer kalt <strong>blobs</strong>. Gå til <strong>stnflab01 → Data storage → Containers → + Container</strong>.
-        </div>
-        <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
-          <tbody>
-            <tr><td>Container name</td><td class="val-green">lab-filer</td><td>Kun lowercase, ingen mellomrom</td></tr>
-            <tr><td>Anonymous access level</td><td class="val-green">Private (no anonymous access)</td><td>Ingen offentlig tilgang — standardvalg og anbefalt</td></tr>
-          </tbody>
-        </table>
-        <div class="infobox infobox-info">
-          <div class="infobox-icon">💡</div>
-          <div><strong>Tilgangsnivåer på container:</strong> Private = kun autentiserte forespørsler. Blob = alle kan lese filer med direkte URL. Container = alle kan liste og lese. Bruk alltid Private i produksjon.</div>
+          <div>Husk <strong>Tags-fanen</strong> — legg til environment=lab, owner=Karsten, purpose=training. Azure Policy blokkerer ellers opprettelsen.</div>
         </div>
       </div>
     </div>
@@ -687,22 +494,70 @@
         <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">Last opp en testfil og test URL-tilgang</div>
+        <div class="step-title">Viktige innstillinger — Advanced, Networking, Data protection, Encryption</div>
+        <table class="settings-table">
+          <thead><tr><th>Fane</th><th>Innstilling</th><th>Lab-verdi</th><th>Produksjon</th></tr></thead>
+          <tbody>
+            <tr><td>Advanced</td><td>Require secure transfer</td><td class="val-green">På</td><td>Alltid på</td></tr>
+            <tr><td>Advanced</td><td>Allow anonymous access</td><td class="val-green">Av</td><td>Alltid av</td></tr>
+            <tr><td>Advanced</td><td>Minimum TLS version</td><td class="val-green">1.2</td><td>Alltid 1.2</td></tr>
+            <tr><td>Advanced</td><td>Access tier</td><td class="val-green">Hot</td><td>Hot/Cool/Cold etter behov</td></tr>
+            <tr><td>Networking</td><td>Public network access</td><td class="val-green">Enable</td><td>Disable + Private Endpoint</td></tr>
+            <tr><td>Networking</td><td>Network routing</td><td class="val-green">Microsoft routing</td><td>Microsoft routing</td></tr>
+            <tr><td>Data protection</td><td>Soft delete blobs</td><td class="val-green">På — 7 dager</td><td>På — 30-90 dager</td></tr>
+            <tr><td>Data protection</td><td>Soft delete containers</td><td class="val-green">På — 7 dager</td><td>På — 30-90 dager</td></tr>
+            <tr><td>Encryption</td><td>Encryption type</td><td class="val-green">Microsoft-managed keys</td><td>Customer-managed ved strenge krav</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STEG 2 -->
+    <div class="phase-heading">Steg 2 — Blob Storage og tilgangstesting <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Opprett container og last opp filer</div>
         <div class="step-body">
-          Gå inn i containeren → klikk <strong>Upload</strong> og last opp en liten testfil. Klikk på filen etterpå og kopier <strong>URL</strong>-en. Prøv å åpne den i nettleseren — du skal få feilmelding om at tilgangen er blokkert.
+          Gå til <strong>stnflab01 → Data storage → Containers → + Container</strong>. Vi lastet opp HTML-filene fra porteføljen som testfiler.
         </div>
         <table class="settings-table">
-          <thead><tr><th>Test</th><th>Forventet resultat</th></tr></thead>
+          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
           <tbody>
-            <tr><td>Åpne blob-URL direkte i nettleser</td><td class="val-red">403 — ResourceNotFound (Private container)</td></tr>
-            <tr><td>Åpne blob-URL med gyldig SAS-token</td><td class="val-green">Filen lastes ned</td></tr>
+            <tr><td>Container name</td><td class="val-green">lab-filer</td><td>Kun lowercase, ingen mellomrom</td></tr>
+            <tr><td>Anonymous access level</td><td class="val-green">Private (no anonymous access)</td><td>Ingen offentlig tilgang — standard og anbefalt</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Test tilgang — Private blokkerer som forventet</div>
+        <div class="step-body">
+          Kopierte blob-URL og åpnet i nettleseren — fikk forventet feilmelding.
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Test</th><th>Resultat</th></tr></thead>
+          <tbody>
+            <tr><td>Åpne blob-URL uten autentisering</td><td class="val-red">PublicAccessNotPermitted — som forventet ✅</td></tr>
+            <tr><td>Åpne blob-URL med SAS-token</td><td class="val-green">Filen vises i nettleser ✅</td></tr>
+            <tr><td>Åpne blob-URL etter SAS utløpt</td><td class="val-red">403 — som forventet ✅</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
     <!-- STEG 3 -->
-    <div class="phase-heading">Steg 3 — SAS-token og tilgangsstyring <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Steg 3 — SAS-token <span class="phase-badge">Fullført</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -710,25 +565,49 @@
         <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">Generer et SAS-token for blob-filen</div>
+        <div class="step-title">Generer SAS-token for enkeltfil</div>
         <div class="step-body">
-          SAS (Shared Access Signature) er en tidsbegrenset URL med spesifikke tillatelser. I stedet for å gi noen full tilgang til Storage Account gir du dem kun tilgang til én fil i én time.
-        </div>
-        <div class="infobox infobox-info">
-          <div class="infobox-icon">💡</div>
-          <div>Gå til: <strong>stnflab01 → Containers → lab-filer → klikk på filen → Generate SAS</strong></div>
+          Gå til <strong>stnflab01 → Containers → lab-filer → klikk på fil → Generate SAS</strong>.
         </div>
         <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
+          <thead><tr><th>Innstilling</th><th>Verdi</th></tr></thead>
           <tbody>
-            <tr><td>Permissions</td><td class="val-green">Read</td><td>Kun lese — ikke skrive eller slette</td></tr>
-            <tr><td>Expiry</td><td class="val-green">1 time fra nå</td><td>Korteste praktiske varighet for testing</td></tr>
-            <tr><td>Allowed protocols</td><td class="val-green">HTTPS only</td><td>Alltid — aldri HTTP i produksjon</td></tr>
+            <tr><td>Permissions</td><td class="val-green">Read</td></tr>
+            <tr><td>Expiry</td><td class="val-green">1 time fra nå</td></tr>
+            <tr><td>Allowed protocols</td><td class="val-green">HTTPS only</td></tr>
           </tbody>
         </table>
         <div class="infobox infobox-warn">
           <div class="infobox-icon">⚠️</div>
-          <div><strong>SAS-tokens kan ikke tilbakekalles</strong> (med mindre du roterer Access Key). I produksjon bør du bruke <strong>User Delegation SAS</strong> (basert på Entra ID) fremfor Service SAS (basert på Access Key) — da kan du tilbakekalle ved å fjerne tilgang i Entra ID.</div>
+          <div><strong>SAS-tokens kan ikke tilbakekalles</strong> — bruk User Delegation SAS (Entra ID-basert) i produksjon fremfor Service SAS (Access Key-basert). Da kan du tilbakekalle ved å fjerne Entra ID-tilgang.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEG 4 -->
+    <div class="phase-heading">Steg 4 — Azure Files og Cloud Shell <span class="phase-badge">Fullført</span></div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num done">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-content">
+        <div class="step-title">Opprett File Share og monter via Cloud Shell</div>
+        <div class="step-body">
+          Gå til <strong>stnflab01 → Data storage → File shares → + File share</strong>. Brukte Cloud Shell (PowerShell) for å montere som Z:\.
+        </div>
+        <table class="settings-table">
+          <thead><tr><th>Innstilling</th><th>Verdi</th></tr></thead>
+          <tbody>
+            <tr><td>Name</td><td class="val-green">lab-share</td></tr>
+            <tr><td>Tier</td><td class="val-green">Transaction optimized</td></tr>
+            <tr><td>Backup</td><td class="val-green">Deaktivert (tas i Lab 8)</td></tr>
+          </tbody>
+        </table>
+        <div class="infobox infobox-info">
+          <div class="infobox-icon">💡</div>
+          <div><strong>lab-share brukes også av Cloud Shell</strong> — Azure Cloud Shell lagrer sine filer i samme File Share under mappen <code>.cloudconsole</code>. Verifiser filinnhold via <strong>File shares → lab-share → Browse</strong> i portalen.</div>
         </div>
       </div>
     </div>
@@ -739,55 +618,28 @@
         <div class="step-line"></div>
       </div>
       <div class="step-content">
-        <div class="step-title">RBAC-tilgang til Storage Account</div>
+        <div class="step-title">PowerShell — monter File Share</div>
         <div class="step-body">
-          For brukere og applikasjoner er RBAC bedre enn SAS-tokens — tilgangen kan tilbakekalles når som helst, og alt logges i Entra ID.
+          Kjørt fra Cloud Shell (PowerShell). Hent Access Key som variabel for å unngå eksponering.
         </div>
-        <table class="settings-table">
-          <thead><tr><th>Rolle</th><th>Hva den gir</th><th>Typisk bruker</th></tr></thead>
-          <tbody>
-            <tr><td>Storage Blob Data Owner</td><td>Full tilgang til blob-data</td><td>Admin, scripts</td></tr>
-            <tr><td>Storage Blob Data Contributor</td><td>Les, skriv og slett blobs</td><td>Applikasjoner som skriver data</td></tr>
-            <tr><td>Storage Blob Data Reader</td><td class="val-green">Kun lese blobs</td><td>Applikasjoner som kun leser</td></tr>
-            <tr><td>Storage Account Contributor</td><td>Administrer storage — ikke data</td><td>IT-admin</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- STEG 4 -->
-    <div class="phase-heading">Steg 4 — Azure Files <span class="phase-badge">Fullført</span></div>
-
-    <div class="step">
-      <div class="step-left">
-        <div class="step-num done">1</div>
-        <div class="step-line"></div>
-      </div>
-      <div class="step-content">
-        <div class="step-title">Opprett File Share og koble til som nettverksdisk</div>
-        <div class="step-body">
-          Azure Files lar deg montere en nettverksdisk i Windows akkurat som en vanlig filserver — via SMB-protokollen. Gå til <strong>stnflab01 → Data storage → File shares → + File share</strong>.
-        </div>
-        <table class="settings-table">
-          <thead><tr><th>Innstilling</th><th>Verdi</th><th>Forklaring</th></tr></thead>
-          <tbody>
-            <tr><td>Name</td><td class="val-green">lab-share</td><td>Kun lowercase og bindestrek</td></tr>
-            <tr><td>Tier</td><td class="val-green">Transaction optimized</td><td>Billigste alternativ — greit for lab. Premium gir lavere latency</td></tr>
-          </tbody>
-        </table>
-        <div class="infobox infobox-info">
-          <div class="infobox-icon">💡</div>
-          <div>Klikk på <strong>lab-share → Connect</strong> for å få ferdig PowerShell-script som monterer disken på Windows. Scriptet inneholder Access Key automatisk — kjør det på vm-lab-01 for å montere som Z:\ eller annen bokstav.</div>
-        </div>
+        <div class="code-block">
+# Lagre Access Key som variabel — vises ikke i terminal<br>
+$key = az storage account keys list --resource-group rg-lab-01 --account-name stnflab01 --query '[0].value' -o tsv<br><br>
+# Test port 445 (SMB)<br>
+Test-NetConnection -ComputerName stnflab01.file.core.windows.net -Port 445<br><br>
+# Monter som Z:\<br>
+New-PSDrive -Name Z -PSProvider FileSystem -Root "\stnflab01.file.core.windows.net\lab-share" -Credential (New-Object System.Management.Automation.PSCredential("localhost\stnflab01", (ConvertTo-SecureString $key -AsPlainText -Force))) -Persist<br><br>
+# Verifiser<br>
+Get-ChildItem Z:        </div>
         <div class="infobox infobox-warn">
           <div class="infobox-icon">⚠️</div>
-          <div><strong>Port 445 (SMB) må være åpen</strong> mot Azure. I noen bedriftsnettverk er denne porten blokkert av brannmur — da fungerer ikke montering fra on-premises. Fra Azure VM-er fungerer det alltid.</div>
+          <div><strong>Port 445 (SMB)</strong> er blokkert i mange bedriftsnettverk. Fra Azure VM-er og Cloud Shell fungerer det alltid. Fra on-premises kreves VPN eller ExpressRoute.</div>
         </div>
       </div>
     </div>
 
     <!-- ERFARINGER -->
-    <div class="phase-heading">Erfaringer underveis <span class="phase-badge">Fullført</span></div>
+    <div class="phase-heading">Erfaringer underveis <span class="phase-badge">Viktig</span></div>
 
     <div class="step">
       <div class="step-left">
@@ -798,11 +650,18 @@
         <table class="settings-table">
           <thead><tr><th>Hva</th><th>Hva skjedde</th><th>Løsning</th></tr></thead>
           <tbody>
-            <tr><td>Azure Policy blokkerte opprettelse</td><td>Manglende environment-tag</td><td>La til tags i Tags-fanen</td></tr>
-            <tr><td>Blob-URL ga 403</td><td>Container er Private — som forventet</td><td>Bekreftet at Private access fungerer korrekt</td></tr>
-            <tr><td>SAS-URL fungerte etter utløp</td><td>Token er utløpt — som forventet</td><td>Bekreftet at tidsbegrensning fungerer</td></tr>
+            <tr><td>Azure Policy blokkerte File Share</td><td>Intern ressurs (vault-*) mangler environment-tag</td><td>Policy Exemption med scope stnflab01</td></tr>
+            <tr><td>Feil scope på Policy Exemption</td><td>Opprettet med rg-lab-01 i stedet for stnflab01</td><td>Slettet og opprettet på nytt med riktig scope</td></tr>
+            <tr><td>Resource Lock blokkerte sletting av Exemption</td><td>lock-rg-lab-01-delete hindret sletting</td><td>Fjernet lock midlertidig, slettet exemption, la lock tilbake</td></tr>
+            <tr><td>Access Key eksponert i chat</td><td>az-kommando returnerte nøkkel i klartekst</td><td>Roterte key1 umiddelbart. Bruk alltid $key-variabel</td></tr>
+            <tr><td>Cloud Shell ikke satt opp</td><td>Måtte koble til storage account ved første bruk</td><td>Gjenbrukte stnflab01 og lab-share</td></tr>
+            <tr><td>Feil subscription i Cloud Shell</td><td>Cloud Shell koblet til deaktivert subscription</td><td>az account set --subscription "Nordframe-Lab"</td></tr>
           </tbody>
         </table>
+        <div class="infobox infobox-tip">
+          <div class="infobox-icon">💡</div>
+          <div><strong>Viktigste lærdom:</strong> Rett alltid feil med en gang — ikke "bare fortsett" og korriger etterpå. Dette gjelder spesielt scope på Policy Exemptions og sikkerhet rundt Access Keys.</div>
+        </div>
       </div>
     </div>
 
