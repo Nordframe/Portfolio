@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NordForm AS — Lab-serie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060910;
+    --bg2: #0a0e17;
+    --bg3: #0f1520;
+    --surface: #131b2e;
+    --surface2: #1a2440;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8edf5;
+    --muted: #5a6a8a;
+    --muted2: #7a8fbb;
+    --accent: #4f7fff;
+    --accent2: #6b96ff;
+    --accent3: #a8c4ff;
+    --green: #2dd4a0;
+    --green-dim: rgba(45,212,160,0.10);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.10);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.10);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,127,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,127,255,0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(79,127,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    background: rgba(6,9,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-logo { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--text); text-decoration: none; letter-spacing: -0.3px; }
+  .nav-logo span { color: var(--accent2); }
+  .nav-back { font-size: 13px; color: var(--muted2); text-decoration: none; transition: color 0.2s; }
+  .nav-back:hover { color: var(--text); }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 100px 48px 80px;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    margin-bottom: 64px;
+  }
+  .breadcrumb { font-size: 13px; color: var(--muted); margin-bottom: 20px; display: flex; gap: 6px; align-items: center; }
+  .breadcrumb a { color: var(--muted2); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--text); }
+  .breadcrumb-sep { color: var(--muted); }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .page-title span { color: var(--accent2); }
+
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--muted2);
+    line-height: 1.7;
+    max-width: 680px;
+    margin-bottom: 24px;
+  }
+
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-family: var(--font-mono);
+    padding: 4px 10px;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 99px; color: var(--muted2);
+  }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── Story box ── */
+  .story-box {
+    background: linear-gradient(135deg, rgba(79,127,255,0.06), rgba(167,139,250,0.04));
+    border: 1px solid rgba(79,127,255,0.2);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 56px;
+  }
+  .story-box h2 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+  }
+  .story-box p { font-size: 14px; color: var(--muted2); line-height: 1.75; margin-bottom: 10px; }
+  .story-box p:last-child { margin-bottom: 0; }
+  .story-box strong { color: var(--text); }
+
+  /* ── Phase heading ── */
+  .phase-heading {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 56px 0 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .phase-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .phase-badge {
+    font-size: 11px; font-family: var(--font-mono);
+    padding: 2px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--muted2);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .phase-badge.az104 { background: var(--amber-dim); border-color: rgba(245,166,35,0.25); color: var(--amber); }
+  .phase-badge.m365 { background: var(--green-dim); border-color: rgba(45,212,160,0.25); color: var(--green); }
+  .phase-badge.intune { background: var(--purple-dim); border-color: rgba(167,139,250,0.25); color: var(--purple); }
+  .phase-badge.sc300 { background: var(--red-dim); border-color: rgba(248,113,113,0.2); color: var(--red); }
+  .phase-badge.az305 { background: rgba(79,127,255,0.10); border-color: rgba(79,127,255,0.25); color: var(--accent2); }
+
+  /* ── Lab card ── */
+  .lab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .lab-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .lab-card.open { border-color: rgba(79,127,255,0.3); }
+
+  .lab-header {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 20px 24px;
+    user-select: none;
+  }
+
+  .lab-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    min-width: 32px;
+    padding-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .lab-header-main { flex: 1; }
+  .lab-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .lab-sub { font-size: 13px; color: var(--muted2); margin-bottom: 10px; }
+  .lab-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lab-tag {
+    font-size: 11px; font-family: var(--font-mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+  }
+  .tag-az104 { background: var(--amber-dim); border-color: rgba(245,166,35,0.2); color: var(--amber); }
+  .tag-m365  { background: var(--green-dim); border-color: rgba(45,212,160,0.2); color: var(--green); }
+  .tag-intune { background: var(--purple-dim); border-color: rgba(167,139,250,0.2); color: var(--purple); }
+  .tag-sc300 { background: var(--red-dim); border-color: rgba(248,113,113,0.15); color: var(--red); }
+  .tag-az305 { background: rgba(79,127,255,0.08); border-color: rgba(79,127,255,0.2); color: var(--accent2); }
+  .tag-md102 { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.2); color: #fbbf24; }
+
+  .lab-chevron {
+    font-size: 14px; color: var(--muted);
+    transition: transform 0.25s;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+  .lab-card.open .lab-chevron { transform: rotate(180deg); }
+
+  /* ── Lab body ── */
+  .lab-body {
+    display: none;
+    padding: 0 24px 24px 72px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+  .lab-card.open .lab-body { display: block; }
+
+  .section-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  .mission-box {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 4px;
+  }
+
+  .steps-list { list-style: none; margin-top: 4px; }
+  .steps-list li {
+    position: relative;
+    padding: 10px 0 10px 28px;
+    font-size: 14px;
+    color: var(--muted2);
+    line-height: 1.65;
+    border-bottom: 1px solid var(--border);
+  }
+  .steps-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .steps-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 18px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .steps-list li strong { color: var(--text); }
+
+  .why-box {
+    background: rgba(79,127,255,0.05);
+    border: 1px solid rgba(79,127,255,0.15);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--muted2);
+    line-height: 1.65;
+    margin-top: 8px;
+  }
+  .why-box strong { color: var(--accent3); }
+
+  .warn-box {
+    background: var(--amber-dim);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--amber);
+    line-height: 1.65;
+    margin-top: 8px;
+    display: flex; gap: 8px;
+  }
+
+  .accept-list { list-style: none; margin-top: 4px; }
+  .accept-list li {
+    padding: 7px 0 7px 24px;
+    font-size: 13px;
+    color: var(--muted2);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .accept-list li:last-child { border-bottom: none; }
+  .accept-list li::before {
+    content: '✓';
+    position: absolute; left: 0;
+    color: var(--green);
+    font-size: 12px;
+  }
+
+  /* ── Progress bar ── */
+  .progress-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+  .progress-label { font-size: 13px; color: var(--muted2); margin-bottom: 10px; }
+  .progress-label span { color: var(--text); font-weight: 600; }
+  .progress-bar-bg { background: var(--bg3); border-radius: 99px; height: 6px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 1s ease; }
+  .cert-overview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .cert-chip {
+    font-size: 12px; font-family: var(--font-mono);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid;
+  }
+
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 900px; margin: 0 auto;
+  }
+  .footer-text { font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .wrap { padding: 80px 20px 60px; }
+    .lab-body { padding-left: 24px; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Karsten <span>Skåla Ek</span>.no</a>
+  <a href="index.html#lab" class="nav-back">← Tilbake til portefølje</a>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="index.html">Hjem</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>NordForm AS — Lab-serie</span>
+    </div>
+    <h1 class="page-title">NordForm AS<br><span>25 laber fra scratch til produksjon</span></h1>
+    <p class="page-subtitle">En sammenhengende lab-serie der du bygger og drifter hele Microsoft-infrastrukturen til et fiktivt norsk konsulentfirma. Azure, Entra ID, Intune, M365 og sikkerhet — fra dag én til Zero Trust.</p>
+    <div class="meta-pills">
+      <span class="pill"><span class="pill-dot" style="background:var(--amber)"></span>AZ-104</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--green)"></span>MS-102</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--purple)"></span>MD-102</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--red)"></span>SC-300</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--accent2)"></span>AZ-305</span>
+      <span class="pill">25 laber</span>
+      <span class="pill">Progressiv vanskegrad</span>
+    </div>
+  </div>
+
+  <!-- Story -->
+  <div class="story-box">
+    <h2>🏢 Bedriftsstory — NordForm AS</h2>
+    <p><strong>NordForm AS</strong> er et norsk konsulentfirma med 80 ansatte fordelt på kontorer i Stavanger og Oslo. De selger rådgivningstjenester innen bygg og anlegg. IT-sjefen har nettopp sluttet, og du er ansatt som ny IT-ansvarlig med mandat til å modernisere hele infrastrukturen.</p>
+    <p>Firmaet har i dag <strong>ingen strukturert Azure-tenants, ingen Intune-styring og ingen formell sikkerhetsstrategi</strong>. De har Microsoft 365 Business Premium-lisenser, men bruker dem dårlig. Styret har vedtatt at de innen 12 måneder skal oppfylle NSM grunnprinsipper og være klare for ekstern revisjon.</p>
+    <p><strong>Du starter med blanke ark.</strong> Hver lab er et oppdrag du mottar fra IT-sjef, CISO eller styret — og beslutningene du tar tidlig vil påvirke hva som er mulig senere.</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">Fremdrift: <span id="prog-text">0 av 25 laber fullført</span></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar"></div></div>
+    <div class="cert-overview">
+      <span class="cert-chip tag-az104">AZ-104: Lab 1–13</span>
+      <span class="cert-chip tag-m365">MS-102: Lab 8–15</span>
+      <span class="cert-chip tag-intune">MD-102: Lab 14–19</span>
+      <span class="cert-chip tag-sc300">SC-300: Lab 10–25</span>
+      <span class="cert-chip tag-az305">AZ-305: Lab 16–25</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FASE 1 — Grunnmur
+  ═══════════════════════════════════════════════ -->
+  <div class="phase-heading">Fase 1 — Grunnmur <span class="phase-badge az104">AZ-104 kjerne</span></div>
+
+  <!-- LAB 01 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">01</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Opprett og konfigurer Azure-tenanten til NordForm</div>
+        <div class="lab-sub">Management groups · Subscriptions · Resource Groups · Tagging-strategi</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">IT-sjefen ber deg sette opp Azure-fundamentet. «Vi trenger en ryddig struktur fra dag én — vi vil ikke rydde opp kaos om to år», sier hun. Du skal opprette hierarkiet som all fremtidig drift skal leve i.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Management Group</strong> kalt <code>mg-nordform-root</code> under Tenant Root Group. Dette er paraply-nivået som lar deg sette policyer som gjelder alle subscriptions under.</li>
+        <li><strong>Knytt din Pay-As-You-Go subscription</strong> under management group-en. Nå arver subscriptionen fremtidige policyer automatisk.</li>
+        <li><strong>Opprett tre Resource Groups:</strong> <code>rg-identity</code>, <code>rg-network</code>, <code>rg-workloads</code>. Disse speiler de tre ansvarssonene i en reell arkitektur — identitet skilles fra nettverk som skilles fra applikasjoner.</li>
+        <li><strong>Definer en tagging-konvensjon</strong> og tag alle resource groups med: <code>environment: lab</code>, <code>owner: nordform-it</code>, <code>costcenter: infra</code>. Tags er grunnlaget for kostnadsrapportering og policy-håndhevelse.</li>
+        <li><strong>Sett opp et Budget Alert</strong> på NOK 300/mnd på subscriptionen med e-postvarsling til deg selv. Dette hindrer overraskelser på regningen.</li>
+      </ul>
+
+      <div class="why-box"><strong>Hvorfor dette valget:</strong> Management Groups lar deg administrere hundrevis av subscriptions som én enhet. NordForm er lite nå, men hvis de vokser eller splitter environments (prod/dev) trenger de dette hierarkiet på plass. Det er umulig å retroaktivt legge til management groups uten å flytte ressurser.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Management group eksisterer og subscription er koblet til den</li>
+        <li>Tre resource groups med korrekte tags er opprettet</li>
+        <li>Budget alert er konfigurert og bekreftet på e-post</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 02 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">02</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Brukere, grupper og RBAC i Entra ID</div>
+        <div class="lab-sub">Entra ID · Users · Groups · RBAC · Least Privilege</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi trenger testbrukere som speiler roller i firmaet, og vi vil ikke at alle skal ha tilgang til alt i Azure», sier IT-sjefen. Du skal opprette brukerstrukturen og knytte Azure-tilganger til roller — ikke enkeltpersoner.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett fire brukere</strong> i Entra ID: <code>alice.admin@...</code> (IT), <code>bob.developer@...</code> (utvikling), <code>carol.finance@...</code> (økonomi), <code>dave.readonly@...</code> (konsulent). Gi dem sterke passord og noter dem.</li>
+        <li><strong>Opprett tre sikkerhetsgrupper:</strong> <code>grp-azure-contributors</code>, <code>grp-azure-readers</code>, <code>grp-azure-admins</code>. Legg alice i admins, bob i contributors, carol og dave i readers.</li>
+        <li><strong>Tildel RBAC via grupper</strong> — IKKE direkte til brukere: <code>grp-azure-admins</code> → Contributor på subscription-nivå, <code>grp-azure-readers</code> → Reader på subscription-nivå. Contributor-gruppen trenger bare <code>rg-workloads</code>.</li>
+        <li><strong>Test tilgangene</strong> ved å logge inn som bob og verifisere at han kan opprette ressurser i <code>rg-workloads</code> men ikke i <code>rg-network</code>.</li>
+      </ul>
+
+      <div class="why-box"><strong>Hvorfor grupper fremfor direkte RBAC:</strong> Med 80 ansatte som slutter og starter, er det umulig å vedlikeholde individuelle RBAC-tildelinger. Grupper gir deg én plass å administrere tilganger — du fjerner personen fra gruppen, og alle Azure-tilganger forsvinner automatisk.</div>
+
+      <div class="warn-box">⚠️ RBAC-endringer i Azure kan ta opptil 5 minutter å propagere. Hvis testpålogging som bob feiler, vent litt og prøv igjen.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Fire brukere opprettet med korrekte gruppemedlemskap</li>
+        <li>RBAC er tildelt grupper, ikke enkeltbrukere</li>
+        <li>Bob kan opprette ressurser i rg-workloads men ikke rg-network (verifisert)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 03 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">03</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure Policy — governance fra dag én</div>
+        <div class="lab-sub">Azure Policy · Tagging enforcement · Allowed locations · Audit vs Deny</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">CISO-en har lest om GDPR og datalokalitet. «Vi vil at ingenting av vår data skal forlate Norge uten at vi aktivt bestemmer det», sier hun. Du skal håndheve dette teknisk — ikke bare som en retningslinje.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett en policy-assignment</strong> som begrenser tillatte lokasjoner til <code>norwayeast</code> og <code>norwaywest</code>. Effect: <code>Deny</code>. Test at du ikke kan opprette en Storage Account i West Europe.</li>
+        <li><strong>Opprett en tagging-policy</strong> med effect <code>Deny</code> som krever at alle ressurser har taggen <code>environment</code>. Uten den kan ressursen ikke opprettes.</li>
+        <li><strong>Opprett en audit-policy</strong> som identifiserer VM-er uten Defender for Cloud aktivert. Effect: <code>Audit</code> — dette logger, men blokkerer ikke. Nyttig for synlighet uten å bryte eksisterende ressurser.</li>
+        <li><strong>Se Compliance-dashboardet</strong> og forstå forskjellen på Compliant, Non-compliant og Exempt.</li>
+      </ul>
+
+      <div class="why-box"><strong>Audit vs Deny:</strong> Deny stopper fremtidige feil, men kan knekke eksisterende arbeidsflyter. Audit gir deg synlighet uten å blokkere. I en ny tenant starter du gjerne med Audit for å kartlegge tilstand, deretter oppgraderer du til Deny når du vet hva som finnes. I produksjon er rekkefølgen kritisk.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Ressursopprettelse i West Europe blokkeres av policy</li>
+        <li>Ressurs uten environment-tag kan ikke opprettes</li>
+        <li>Compliance-dashboard viser minst én audit-policy med data</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 04 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">04</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Virtuelt nettverk og subnett-arkitektur</div>
+        <div class="lab-sub">VNet · Subnets · NSG · Service Endpoints</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">NordForm skal ha et internt nettverksmiljø i Azure. «Vi trenger å separere servere fra klienter og sikre at ingenting snakker med omverdenen uten at vi har eksplisitt åpnet for det», sier nettverksansvarlig.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett VNet</strong> <code>vnet-nordform-prod</code> med adresserom <code>10.10.0.0/16</code> i Norway East. Et /16 gir deg 65 000 adresser — romslig nok for vekst uten å sløse.</li>
+        <li><strong>Opprett tre subnett:</strong> <code>snet-servers</code> (10.10.1.0/24), <code>snet-clients</code> (10.10.2.0/24), <code>snet-bastion</code> (10.10.3.0/27 — Bastion krever minimum /27). Adressene er separert slik at du kan sette ulike sikkerhetspolicyer per subnett.</li>
+        <li><strong>Opprett NSG</strong> <code>nsg-servers</code> og knytt den til <code>snet-servers</code>. Legg til Deny-regel for inbound fra internett (port Any), men Allow fra <code>snet-clients</code>. Serverne er nå ikke direkte eksponert.</li>
+        <li><strong>Aktiver Service Endpoint</strong> for Microsoft.Storage på <code>snet-servers</code>. Dette lar servere nå Azure Storage over Microsofts backbone — ikke via internett.</li>
+      </ul>
+
+      <div class="why-box"><strong>Hvorfor subnett-segmentering:</strong> Hvis én server kompromitteres, hindrer NSG-reglene lateral bevegelse til andre subnett. Dette er grunnleggende i Zero Trust-tilnærming og et krav i NSMs grunnprinsipper: minimer angrepsflate mellom soner.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>VNet med tre subnett opprettet med korrekte adresserom</li>
+        <li>NSG er knyttet til snet-servers med korrekte inbound-regler</li>
+        <li>Service Endpoint for Storage aktivert på snet-servers</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 05 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">05</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Windows Server VM og Azure Bastion</div>
+        <div class="lab-sub">Virtual Machines · Bastion · Disk · Managed Identity</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi trenger en Windows Server for intern filbehandling. Og vi vil absolutt ikke ha RDP eksponert mot internett», sier IT-sjefen. Du skal deploye en VM og gi deg selv sikker tilgang uten å åpne brannmuren.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Deploy Windows Server 2022 VM</strong> i <code>snet-servers</code>. Velg <code>Standard_B2s</code> — rimelig og tilstrekkelig for lab. Deaktiver Public IP under opprettelse. Uten public IP er VM-en ikke direkte nåbar fra internett.</li>
+        <li><strong>Deploy Azure Bastion</strong> i <code>snet-bastion</code> (Basic SKU). Bastion gir deg RDP og SSH direkte i nettleseren over HTTPS — ingen port 3389 åpen i NSG.</li>
+        <li><strong>Koble til VM-en via Bastion</strong> — verifiser at du kommer inn. Prøv deretter å koble til via vanlig RDP på port 3389 — det skal feile fordi NSG blokkerer det.</li>
+        <li><strong>Aktiver System-assigned Managed Identity</strong> på VM-en. Dette gir VM-en en identitet i Entra ID som den kan bruke for å autentisere mot Azure-tjenester uten lagrede passord i konfigurasjonen.</li>
+      </ul>
+
+      <div class="why-box"><strong>Managed Identity vs lagrede credentials:</strong> Uten Managed Identity måtte du lagret et service principal-passord i konfigurasjonen på VM-en — en sikkerhetsrisiko. Med Managed Identity henter VM-en token automatisk fra Entra ID. Ingen passord å stjele, rotere eller glemme.</div>
+
+      <div class="warn-box">⚠️ Bastion Basic SKU koster ca. NOK 130/dag. Slett Bastion-ressursen etter lab, og gjenopprett ved behov. VM-en kan du stoppe (deallocate) for å unngå compute-kostnad.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>VM kjører i snet-servers uten public IP</li>
+        <li>Innlogging via Bastion fungerer</li>
+        <li>Direkte RDP på port 3389 feiler</li>
+        <li>Managed Identity er aktivert på VM</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 06 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">06</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure Storage — blob, files og tilgangsstyring</div>
+        <div class="lab-sub">Storage Account · Blob · Azure Files · SAS · RBAC · Lifecycle</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">NordForm trenger et sted å lagre prosjektfiler og backup-data. «Vi vil ha forskjellige tilgangsnivåer — noen skal bare lese, andre skal kunne skrive, og sensitive filer skal ikke være tilgjengelig for alle», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Storage Account</strong> <code>stnordformprod01</code> (kun lowercase, max 24 tegn) i Norway East. Deaktiver "Allow Blob public access" — NordForms data skal ikke være offentlig tilgjengelig ved en feil.</li>
+        <li><strong>Opprett Blob Container</strong> <code>prosjektfiler</code> og last opp noen testfiler. Tildel <code>bob</code> rollen <code>Storage Blob Data Contributor</code> via RBAC — ikke via Access Keys. Access Keys gir full tilgang; RBAC gir granulær kontroll.</li>
+        <li><strong>Generer et SAS-token</strong> med kun lesettilgang og utløp om 1 time. Test at tokenets URL fungerer, og at det slutter å fungere etter utløp. SAS brukes typisk til å gi midlertidig tilgang til eksterne parter uten å opprette brukerkontoer.</li>
+        <li><strong>Opprett Azure Files Share</strong> og mount den som en nettverksstasjon (Z:) på VM-en fra lab 05. Dette er NordForms delte filserver — uten å drifte en fysisk server.</li>
+        <li><strong>Sett opp Lifecycle Management</strong>: filer som ikke er åpnet på 30 dager flyttes til Cool tier, og etter 90 dager til Archive. Dette kutter lagringskostnader automatisk.</li>
+      </ul>
+
+      <div class="why-box"><strong>RBAC vs Access Keys:</strong> Access Keys er to master-nøkler som gir full tilgang til alt i Storage Account. Hvis én lekker er all data eksponert. RBAC-roller er scopet til spesifikke brukere og operasjoner, kan trekkes tilbake uten å rotere nøkler, og auditlogges per bruker.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Storage Account uten public blob access</li>
+        <li>Bob har RBAC-tilgang til blob, ikke via Access Keys</li>
+        <li>SAS-token fungerer og utløper korrekt</li>
+        <li>Azure Files montert som Z: på VM</li>
+        <li>Lifecycle policy er konfigurert</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 07 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">07</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure Monitor, Log Analytics og Alerts</div>
+        <div class="lab-sub">Log Analytics Workspace · Diagnostic Settings · Alerts · Workbooks</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi ble nylig rammet av en incident vi ikke visste om på to dager. Det skal aldri skje igjen», sier CISO. Du skal sette opp overvåking som fanger avvik og varsler automatisk.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Log Analytics Workspace</strong> <code>law-nordform-prod</code>. Dette er sentralt hjertet i all overvåking — alle ressurser sender loggene sine hit.</li>
+        <li><strong>Aktiver Diagnostic Settings</strong> på VM, Storage Account og Key Vault (neste lab). Koble alle til samme workspace. Nå kan du søke på tvers av alle ressurser i én KQL-spørring.</li>
+        <li><strong>Skriv en KQL-spørring</strong> som viser alle påloggingsfeil på VM siste 24 timer: <code>SecurityEvent | where EventID == 4625 | summarize count() by Account, Computer</code>. Forstå hva hvert ledd gjør.</li>
+        <li><strong>Sett opp en Alert Rule</strong> som sender e-post til deg hvis CPU på VM-en overstiger 80% i mer enn 5 minutter. Konfigurer en Action Group med e-post. Alerts bruker Metric eller Log som kilde.</li>
+        <li><strong>Se på VM Insights</strong> — aktivér det fra Monitoring-seksjonen på VM. Du får ferdige dashboards for ytelse og prosesser uten å skrive KQL.</li>
+      </ul>
+
+      <div class="why-box"><strong>Ett workspace for alt:</strong> Mange begynner med separate workspaces per ressurs, og ender opp med umulig korrelasjon på tvers. Et sentralt workspace lar deg kombinere Azure AD-logger, VM-logger og nettverkslogger i én spørring — kritisk for incident response.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Log Analytics Workspace mottar data fra minimum to ressurser</li>
+        <li>KQL-spørring for påloggingsfeil returnerer resultater</li>
+        <li>Alert Rule med Action Group er konfigurert og testet</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FASE 2 — Identitet og sikkerhet
+  ═══════════════════════════════════════════════ -->
+  <div class="phase-heading">Fase 2 — Identitet og tilgangsstyring <span class="phase-badge sc300">SC-300 tyngde</span></div>
+
+  <!-- LAB 08 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">08</div>
+      <div class="lab-header-main">
+        <div class="lab-title">MFA, SSPR og Conditional Access grunnleggende</div>
+        <div class="lab-sub">Entra ID · MFA · SSPR · Conditional Access · Named Locations</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-sc300">SC-300</span>
+          <span class="lab-tag tag-m365">MS-102</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi har hatt tre phishing-forsøk denne måneden. Vi trenger MFA for alle, og vi vil ikke at folk skal kunne logge inn fra land vi ikke driver i», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Aktiver SSPR</strong> (Self-Service Password Reset) for alle brukere. Konfigurer to autentiseringsmetoder påkrevd: mobilapp og e-post. Dette reduserer helpdesk-last og gir brukerne autonomi — men krever at metodene er registrert.</li>
+        <li><strong>Opprett Named Location</strong> kalt "NordForm kontorer" med NordForms offentlige IP-adresser (bruk din egen for lab). Dette definerer hva som er "trusted network".</li>
+        <li><strong>Opprett Conditional Access-policy</strong> "Krev MFA utenfor kontor": Scope: Alle brukere, Alle apper. Condition: Location NOT IN "NordForm kontorer". Grant: Require MFA. Sett til Report-only først.</li>
+        <li><strong>Opprett CA-policy</strong> "Blokker høyrisikoland": Condition: Locations → Alle land UNNTATT Norge. Grant: Block. Sett til Report-only og se Sign-in logs for å verifisere treff.</li>
+        <li><strong>Aktiver begge policies</strong> etter at du har verifisert i Report-only at de treffer riktige brukere — og ikke låser deg ute.</li>
+      </ul>
+
+      <div class="why-box"><strong>Report-only er ikke valgfritt:</strong> En feil CA-policy kan låse alle brukere ute fra tenanten — inkludert deg selv. Report-only lar deg se effekten i Sign-in logs (ca. 1 time delay) uten å håndheve den. Alltid start her, spesielt for Block-policies.</div>
+
+      <div class="warn-box">⚠️ Sørg for at din Global Admin-konto er unntatt (excluded) fra Block-policyen med en Exclusion-gruppe. Ellers risikerer du å låse deg selv ute av tenanten.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>SSPR aktivert og verifisert med testbruker</li>
+        <li>Named Location for kontorer opprettet</li>
+        <li>MFA-policy aktiv og treffer riktige pålogginger</li>
+        <li>Admin-konto er eksplisitt ekskludert fra Block-policy</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 09 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">09</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure Key Vault — hemmeligheter og sertifikater</div>
+        <div class="lab-sub">Key Vault · Secrets · RBAC-modell · Rotation · Managed Identity</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi fant passord hardkodet i en konfigurasjonsfil på en server. Det er ikke akseptabelt», sier CISO. Du skal opprette en sentral hemmelighetsforvaltning og vise at applikasjoner kan hente passord uten å lagre dem noe sted.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Key Vault</strong> <code>kv-nordform-prod-01</code> med RBAC-tilgangmodell (ikke Vault Access Policy). RBAC-modellen er ny standard og integrerer med resten av Azure-tilgangsstyringen.</li>
+        <li><strong>Tildel deg selv rollen</strong> <code>Key Vault Secrets Officer</code>. Uten denne kan du ikke lese eller skrive secrets selv som eier av ressursen — det er by design.</li>
+        <li><strong>Opprett tre secrets:</strong> <code>db-password</code>, <code>api-key-external</code>, <code>smtp-password</code>. Disse simulerer typiske hemmeligheter i en bedriftsmiljø.</li>
+        <li><strong>Gi VM-ens Managed Identity</strong> rollen <code>Key Vault Secrets User</code>. Logg inn på VM-en via Bastion og hent en secret via PowerShell uten å bruke noe passord: <code>Get-AzKeyVaultSecret -VaultName "kv-nordform-prod-01" -Name "db-password" -AsPlainText</code></li>
+        <li><strong>Sett opp rotation-alert</strong>: Konfigurer at du får e-post 30 dager før en secret utløper. Manuell rotasjon er det vanligste sikkerhetsproblemet med hemmeligheter.</li>
+      </ul>
+
+      <div class="why-box"><strong>Managed Identity + Key Vault er gullstandarden:</strong> VM-en trenger ingen lagrede credentials for å hente passordet. Den spør Entra ID om et token, presenterer tokenet til Key Vault, og får tilgang. Angripere som kompromitterer VM-en finner ingen passord å stjele — bare et midlertidig token som utløper.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Key Vault med RBAC-modell og tre secrets</li>
+        <li>VM henter secret via Managed Identity uten passord i script</li>
+        <li>Rotation-alert konfigurert</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 10 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">10</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Privileged Identity Management (PIM)</div>
+        <div class="lab-sub">PIM · Eligible roles · JIT · Approval workflow · Access Reviews</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-sc300">SC-300</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi vil ikke at noen skal ha Global Administrator permanent. Det er et altfor bredt angrepsflate — admin-rettigheter skal aktiveres ved behov, med begrunnelse og tidsavgrensning», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Aktiver PIM</strong> i Entra ID (krever P2-lisens — Business Premium inkluderer dette). Første aktivering tar noen minutter å propagere.</li>
+        <li><strong>Konverter din Global Administrator</strong> fra Active (permanent) til Eligible. Du mister rollen umiddelbart — og må aktivere den via PIM for å bruke den.</li>
+        <li><strong>Aktiver rollen</strong> via PIM: gi begrunnelse "Lab-testing av PIM", sett varighet 1 time. Du har nå GA i 1 time, deretter forsvinner den automatisk.</li>
+        <li><strong>Konfigurer aktiveringsinnstillinger</strong> for GA-rollen: krev MFA, krev begrunnelse, maksimal varighet 4 timer. Dette gjelder alle fremtidige aktiveringer.</li>
+        <li><strong>Sett opp Access Review</strong> for GA-rollen: månedlig review, reviewer = deg selv. Systemet minner deg på å vurdere om tilgangen fortsatt er nødvendig.</li>
+      </ul>
+
+      <div class="why-box"><strong>Hvorfor Eligible fremfor Active:</strong> En permanent GA-konto som kompromitteres gir angriperen full kontroll over tenanten for alltid. En Eligible-konto gir angriperen ingenting — de kan ikke aktivere rollen uten MFA og Entra ID-autentisering. JIT-tilgang er et kjernekrav i Zero Trust og NSMs grunnprinsipper.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Global Administrator er Eligible, ikke permanent Active</li>
+        <li>Rolleaktivering krever MFA og begrunnelse</li>
+        <li>Access Review konfigurert og sendt</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FASE 3 — Microsoft 365
+  ═══════════════════════════════════════════════ -->
+  <div class="phase-heading">Fase 3 — Microsoft 365 administrasjon <span class="phase-badge m365">MS-102 tyngde</span></div>
+
+  <!-- LAB 11 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">11</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Exchange Online — e-post, routing og sikkerhet</div>
+        <div class="lab-sub">Exchange Online · Connectors · Anti-spam · DKIM · DMARC · Shared Mailbox</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-m365">MS-102</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi mottar spam og phishing, og vi har fått rapport om at noen mailer spoofer domenet vårt. Vi trenger bedre e-postsikkerhet og en felles postkasse for kontakthenvendelser», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Aktiver DKIM-signering</strong> for NordForms domene i Exchange Admin Center. DKIM kryptografisk signerer utgående e-post slik at mottakere kan verifisere at mailen faktisk kom fra dere — ikke en angriper som spoofer domenet.</li>
+        <li><strong>Konfigurer DMARC-policy</strong> (via DNS TXT-record): start med <code>p=none</code> (kun overvåking), deretter <code>p=quarantine</code> etter 2 uker. DMARC forteller mottakerservere hva de skal gjøre med e-post som feiler SPF/DKIM.</li>
+        <li><strong>Gjennomgå Anti-spam policies</strong> i Defender for Office 365. Forstå forskjellen mellom Spam, High Confidence Spam og Phishing — og hva som skjer med hver kategori.</li>
+        <li><strong>Opprett Shared Mailbox</strong> <code>kontakt@nordform.no</code> med alice og bob som members. En shared mailbox har ingen lisens og lar team svare fra felles adresse med full revisjonslogg.</li>
+        <li><strong>Opprett Distribution Group</strong> <code>alle-ansatte@nordform.no</code> og test at en e-post til gruppen distribueres til alle members.</li>
+      </ul>
+
+      <div class="why-box"><strong>SPF + DKIM + DMARC er treenigheten:</strong> SPF sier hvilke servere som kan sende på vegne av domenet. DKIM signerer selve mailen. DMARC binder dem sammen og definerer hva som skjer ved feil. Uten alle tre er domenet ditt sårbart for spoofing — angripere kan sende e-post som ser ut til å komme fra deg.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>DKIM aktivert og verifisert (grønn status i EAC)</li>
+        <li>DMARC TXT-record publisert i DNS</li>
+        <li>Shared Mailbox opprettet og tilgjengelig for alice og bob</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 12 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">12</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Microsoft Teams — governance og ekstern tilgang</div>
+        <div class="lab-sub">Teams Admin Center · Policies · Guest Access · Retention · DLP</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-m365">MS-102</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Teams har blitt en jungel. Folk oppretter team for alt, inkludert sensitive prosjekter med eksterne konsulenter. Vi trenger kontroll», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Begrens teamopprettelse</strong> til en gruppe kalt <code>grp-teams-creators</code>. Standard er at alle brukere kan opprette teams — i en bedrift fører det til hundrevis av utdaterte teams uten eiere.</li>
+        <li><strong>Konfigurer Guest Access</strong>: tillat gjester, men krev at de godtar Terms of Use før de får tilgang. Sett utløpsdato på gjest-invitasjoner til 180 dager.</li>
+        <li><strong>Sett opp Retention Policy</strong> for Teams-meldinger: bevar i 3 år, deretter slett. Dette er et krav i mange bransjer og hjelper ved juridiske forespørsler.</li>
+        <li><strong>Opprett en DLP-policy</strong> som varsler hvis noen deler et personnummer (norsk format) i en Teams-melding. Effect: varsle brukeren, send alert til compliance-admin.</li>
+        <li><strong>Se på Teams Advisor</strong> i Admin Center — den gir deg en skreddersydd utrullingsplan basert på organisasjonens størrelse.</li>
+      </ul>
+
+      <div class="why-box"><strong>Governance fra dag én:</strong> Å rydde opp i 500 utdaterte teams er langt vanskeligere enn å sette retningslinjer fra starten. Retention og DLP er ikke bare compliance-krav — de beskytter bedriften mot utilsiktet datadeling og sikrer at sensitiv info ikke forsvinner med en ansatt som slutter.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Kun grp-teams-creators kan opprette nye teams</li>
+        <li>Guest Access konfigurert med Terms of Use</li>
+        <li>Retention Policy aktiv for Teams</li>
+        <li>DLP-policy varsler ved personnummer i Teams</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 13 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">13</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Microsoft Purview — informasjonsbeskyttelse og compliance</div>
+        <div class="lab-sub">Sensitivity Labels · DLP · Compliance Manager · Retention</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-m365">MS-102</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Styret ber oss dokumentere at vi er GDPR-compliant. Vi trenger en måte å klassifisere sensitiv informasjon og hindre at den lekker ut», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Sensitivity Labels:</strong> <code>Intern</code>, <code>Konfidensiell</code>, <code>Svært konfidensiell</code>. Konfigurer <code>Svært konfidensiell</code> til å kryptere dokumentet og kun tillate tilgang for spesifikke grupper.</li>
+        <li><strong>Publiser labels</strong> via Label Policy til alle brukere. Brukere vil nå se labels i Word, Excel og Outlook og oppfordres til å klassifisere dokumenter.</li>
+        <li><strong>Opprett DLP-policy</strong> som blokkerer e-post med <code>Svært konfidensiell</code>-label til eksterne adresser med ett klikk. Brukeren kan override med begrunnelse, men hendelsen logges.</li>
+        <li><strong>Sjekk Compliance Manager</strong> — se NordForms "Compliance Score" og hvilke tiltak som gir størst forbedring. Dette er ditt veikart mot GDPR og ISO 27001.</li>
+      </ul>
+
+      <div class="why-box"><strong>Klassifisering er grunnmuren:</strong> DLP, retention og tilgangsstyring er bare effektive hvis dataen er klassifisert. Sensitivity Labels er utgangspunktet som alt annet bygger på — inkludert automatiske policyer som reagerer på labelen, ikke innholdet.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Tre sensitivity labels publisert til alle brukere</li>
+        <li>DLP blokkerer ekstern deling av Svært konfidensiell</li>
+        <li>Compliance Score er gjennomgått og minst to tiltak identifisert</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FASE 4 — Endpoint Management
+  ═══════════════════════════════════════════════ -->
+  <div class="phase-heading">Fase 4 — Endpoint Management <span class="phase-badge intune">MD-102 tyngde</span></div>
+
+  <!-- LAB 14 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">14</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Intune — Entra ID Join og autopilot-klargjøring</div>
+        <div class="lab-sub">Intune · Entra ID Join · Enrollment · Windows Autopilot</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-intune">MD-102</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi kjøper 20 nye laptoper til Stavanger-kontoret. IT-avdelingen sitter i Oslo og kan ikke reise dit for å sette dem opp. Vi trenger at brukerne kan klargjøre dem selv», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Konfigurer automatisk Intune-enrollment</strong> for alle enheter som Entra ID-joiner tenanten. Gå til Intune → Enrollment → Automatic Enrollment og sett MDM scope til All.</li>
+        <li><strong>Join din lab-PC til Entra ID</strong> (Settings → Accounts → Access work or school → Join). Verifiser at enheten dukker opp i Intune med status "Managed".</li>
+        <li><strong>Utforsk Autopilot-konseptet:</strong> I en ekte utrulling registreres laptopens hardware hash hos Microsoft. Når brukeren slår på maskinen for første gang, gjenkjenner Windows den, starter selvstyrt oppsett og joiner Entra ID automatisk — IT trenger ikke røre maskinen fysisk.</li>
+        <li><strong>Opprett en Enrollment Status Page</strong> policy: brukeren ser fremgang under oppsett og kan ikke bruke PC-en før konfigurasjonen er fullført. Dette sikrer at alle apper og policyer er på plass før første innlogging.</li>
+      </ul>
+
+      <div class="why-box"><strong>Zero-touch provisioning:</strong> Tradisjonell imaging krever at IT fisisk setter opp hver PC. Med Autopilot sendes laptopen direkte fra leverandøren til brukeren — og konfigurerer seg selv basert på brukerens identitet i Entra ID. For NordForm med to kontorer er dette forskjellen på én dag vs. en uke ved nyansettelser.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Automatisk enrollment aktivert for tenanten</li>
+        <li>Enhet er Entra-joined og vises i Intune som Managed</li>
+        <li>Enrollment Status Page policy er opprettet</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 15 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">15</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Intune — Compliance Policies og Conditional Access</div>
+        <div class="lab-sub">Compliance Policies · Device Compliance · Conditional Access · Remediation</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-intune">MD-102</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi vil at kun enheter som oppfyller våre sikkerhetskrav skal få tilgang til bedriftsdata. En privateid PC uten kryptering skal ikke kunne lese e-posten vår», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Windows Compliance Policy</strong> med krav: BitLocker påkrevd, minimum Windows 11 22H2, antivirus aktiv, firewall aktiv. Tildel til alle Intune-brukere.</li>
+        <li><strong>Sett Non-compliance action</strong>: send e-post til bruker etter 1 dag, merk enhet som non-compliant etter 3 dager, pensjoneringsvarsel etter 30 dager. Gir brukeren tid til å fikse problemet.</li>
+        <li><strong>Koble Conditional Access til device compliance</strong>: opprett CA-policy "Krev compliant device for M365" — all tilgang til Exchange, SharePoint og Teams krever Compliant device. Ikke-compliant enheter blokkeres.</li>
+        <li><strong>Test flyten:</strong> Se statusen på din Intune-enrolled enhet i Intune-portalen. Er den Compliant? Hvilke krav er oppfylt og hvilke mangler?</li>
+      </ul>
+
+      <div class="why-box"><strong>Device compliance er Zero Trust i praksis:</strong> Entra ID vet hvem du er. Intune vet om enheten din er sikker. Conditional Access kombinerer disse to: du er rett person + enheten er godkjent = tilgang. Mangler én faktor, nektes tilgang. Dette er det reelle fundamentet for moderne endepunktssikkerhet.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Compliance Policy med minimum fire krav opprettet</li>
+        <li>Non-compliance actions konfigurert med tidsintervaller</li>
+        <li>CA-policy krever Compliant device for M365-tilgang</li>
+        <li>Din enrolled enhet viser Compliant eller konkret årsak til Non-compliant</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 16 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">16</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Intune — App-deployment og App Protection Policies</div>
+        <div class="lab-sub">App Deployment · Win32 Apps · App Protection · MAM · BYOD</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-intune">MD-102</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Noen ansatte vil bruke sin private mobiltelefon til å sjekke e-post. Vi vil tillate det, men uten at bedriftsdata havner i private apper eller synkroniseres til iCloud», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Deploy Microsoft 365-apper</strong> (Word, Excel, Teams) til enrolled Windows-enheter via Intune App deployment. Velg "Required" — appen installeres automatisk uten brukerinteraksjon.</li>
+        <li><strong>Opprett App Protection Policy for iOS/Android</strong> (MAM uten enrollment). Krav: krypter app-data, blokker copy-paste fra bedriftsapp til personlig app, krev PIN for å åpne appen.</li>
+        <li><strong>Test BYOD-scenariet:</strong> Installer Outlook på en ikke-enrolled mobil (eller simulator). Logg inn med bedriftskontoen. Verifiser at App Protection Policy håndheves — du kan ikke kopiere innhold fra Outlook til privatnotes.</li>
+        <li><strong>Forstå forskjellen</strong> mellom MDM (fullt managed enhet) og MAM (kun appen er managed). For BYOD er MAM riktig valg — du styrer data i appen, ikke hele telefonen til den ansatte.</li>
+      </ul>
+
+      <div class="why-box"><strong>MDM vs MAM:</strong> Med MDM kan IT tørke hele telefonen. Det er upopulært for privattelefoner — og med rette. MAM lar bedriften kun slette bedriftsdata fra appen, ikke personlige bilder og meldinger. Det er balansen mellom sikkerhet og ansatt-tillit.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>M365-apper deployet som Required til enrolled enheter</li>
+        <li>App Protection Policy for mobil med copy-paste blokkering</li>
+        <li>BYOD-scenario testet og policyen verifisert</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FASE 5 — Avansert nettverk og hybrid
+  ═══════════════════════════════════════════════ -->
+  <div class="phase-heading">Fase 5 — Avansert nettverk og hybrid <span class="phase-badge az104">AZ-104 / AZ-305</span></div>
+
+  <!-- LAB 17 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">17</div>
+      <div class="lab-header-main">
+        <div class="lab-title">VNet Peering og hub-spoke arkitektur</div>
+        <div class="lab-sub">VNet Peering · Hub-spoke · Route Tables · UDR</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Oslo-kontoret trenger et eget Azure-miljø, men vi vil at begge kontorene skal nå felles tjenester — uten at Oslo og Stavanger kan snakke direkte med hverandre», sier nettverksansvarlig.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett et nytt VNet</strong> <code>vnet-nordform-oslo</code> (10.20.0.0/16) — dette representerer Oslo-kontoret. Legg merke til at adresserom ikke overlapper med Stavanger-VNet (10.10.0.0/16).</li>
+        <li><strong>Opprett Hub VNet</strong> <code>vnet-nordform-hub</code> (10.0.0.0/16) med et subnett for delte tjenester. Hub-en er der felles ressurser som DNS, Bastion og Firewall bor.</li>
+        <li><strong>Konfigurer VNet Peering</strong>: Stavanger ↔ Hub og Oslo ↔ Hub. Aktiver "Allow gateway transit" i Hub og "Use remote gateways" i Spoke-VNet-ene. Stavanger og Oslo er IKKE direkte peerete — trafikk mellom dem går via Hub.</li>
+        <li><strong>Verifiser</strong> at en VM i Stavanger-VNet kan pinge Hub, men IKKE Oslo direkte uten UDR (User Defined Route) som tvinger trafikk via Hub-en.</li>
+      </ul>
+
+      <div class="why-box"><strong>Hub-spoke er standard arkitekturpattern:</strong> Det gir sentralisert kontroll (logging, firewall og sikkerhet i Hub), mens spoke-nettverkene er isolert fra hverandre. AZ-305 tester deg på designbeslutninger som denne — hvorfor hub-spoke fremfor full mesh, og hvilke avveininger det innebærer.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Tre VNet-er med ikke-overlappende adresserom</li>
+        <li>Peering konfigurert: Stavanger↔Hub og Oslo↔Hub</li>
+        <li>VM i Stavanger kan nå Hub men ikke Oslo direkte</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 18 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">18</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Load Balancer og skalering av VM-er</div>
+        <div class="lab-sub">Azure Load Balancer · VM Scale Sets · Health Probes · Autoscale</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi lanserer et internt webverktøy for prosjektledelse. Det må tåle at alle 80 ansatte bruker det samtidig på mandager, men vi vil ikke betale for kapasitet vi ikke trenger resten av uken», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett en VM Scale Set</strong> med minimum 2 og maksimum 5 instanser. Scale Sets administrerer identiske VM-er som én enhet og kan skalere opp og ned automatisk.</li>
+        <li><strong>Konfigurer Autoscale-regler:</strong> legg til én VM-instans når CPU > 70% i 5 minutter, fjern én instans når CPU < 30% i 10 minutter. Behold minimum 2 for redundans.</li>
+        <li><strong>Deploy Azure Load Balancer</strong> foran Scale Set-en. Konfigurer Health Probe på port 80 — Load Balancer sender kun trafikk til VM-er som svarer på health probe. En VM som krasjer tas automatisk ut av rotasjonen.</li>
+        <li><strong>Test redundansen:</strong> stopp én VM manuelt og verifiser at Load Balancer ruter all trafikk til gjenværende VM-er uten nedetid.</li>
+      </ul>
+
+      <div class="why-box"><strong>Availability vs cost:</strong> To VM-er alltid oppe koster dobbelt, men gir null nedetid ved én feil. En enkelt VM er billigere, men én restart = nedetid for alle 80 ansatte. Helse-prober og autoscaling er kompromisset: du betaler for kapasitet ved behov, men beholder redundans som grunnlinje.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>VM Scale Set med autoscale-regler konfigurert</li>
+        <li>Load Balancer med health probe er aktiv</li>
+        <li>Stopp av én VM resulterer ikke i tap av tilgang til tjenesten</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 19 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">19</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure Backup og disaster recovery</div>
+        <div class="lab-sub">Recovery Services Vault · VM Backup · File Recovery · RTO / RPO</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Styret spør: hva skjer hvis en server krasjer og vi mister data? Kan vi bevise at vi er sikret?», sier IT-sjefen. Du skal implementere backup og gjøre en faktisk gjenoppretting for å bevise at det fungerer.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Opprett Recovery Services Vault</strong> <code>rsv-nordform-prod</code> i Norway East. Aktiver Soft Delete (14 dager) — dette hindrer at en angriper eller feilklikk sletter backup-data permanent.</li>
+        <li><strong>Aktiver VM Backup</strong> med policy: daglig backup kl. 02:00, behold daglige punkter i 30 dager, ukentlige i 12 uker, månedlige i 12 måneder. Forstå konseptene RPO (maks 24t datatap ved daglig backup) og RTO (tid til gjenoppretting).</li>
+        <li><strong>Gjør en File Recovery</strong>: monter et backup-punkt som en lokal disk på VM-en via Azure Portal, gjenopprett én enkelt fil. Dette er den raskeste måten å hente tilbake en fil som ble slettet ved uhell.</li>
+        <li><strong>Dokumenter RTO/RPO</strong> for NordForm: hva er maksimalt akseptabelt datatap og maksimal nedetid? Disse tallene styrer backup-frekvens og gjenopprettingsstrategi.</li>
+      </ul>
+
+      <div class="why-box"><strong>En backup du ikke har testet er ikke en backup:</strong> Det er ikke tilstrekkelig å ha backup aktivert — du må verifisere at gjenoppretting faktisk fungerer. Mange oppdager at backup er korrupt, for gammel eller tar for lang tid, kun når det er for sent. Regelmessige restore-tester er et krav i de fleste rammeverk.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Recovery Services Vault med Soft Delete aktivert</li>
+        <li>VM Backup aktivert med dokumentert policy</li>
+        <li>File Recovery gjennomført og verifisert</li>
+        <li>RTO og RPO er definert og dokumentert</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       FASE 6 — PaaS, arkitektur og Zero Trust
+  ═══════════════════════════════════════════════ -->
+  <div class="phase-heading">Fase 6 — PaaS og arkitekturdesign <span class="phase-badge az305">AZ-305 tyngde</span></div>
+
+  <!-- LAB 20 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">20</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure App Service og Azure SQL Database</div>
+        <div class="lab-sub">App Service · Azure SQL · Private Endpoint · Managed Identity · Connection String</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi vil flytte prosjektledelsesverktøyet til en PaaS-tjeneste fremfor en VM. Vi slipper da å patche operativsystem og drifte web-server», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Deploy en App Service</strong> (gratis F1-tier for lab) med en enkel test-app. App Service er en managed plattform for webapplikasjoner — du deployer kode, Microsoft drifter OS, runtime og web-server.</li>
+        <li><strong>Deploy Azure SQL Database</strong> (serverless tier for kostnadseffektivitet). Sett SQL Admin til en Entra ID-konto — unngå SQL-passord der det er mulig.</li>
+        <li><strong>Koble App Service til SQL</strong> via Managed Identity: aktiver system-assigned identity på App Service, gi den rollen <code>db_datareader</code> i SQL. App-en trenger ingen connection string med passord.</li>
+        <li><strong>Opprett Private Endpoint</strong> for SQL Database — databasen er nå kun tilgjengelig fra innsiden av VNet-et, ikke fra internett, selv om det er en PaaS-tjeneste.</li>
+      </ul>
+
+      <div class="why-box"><strong>PaaS vs IaaS:</strong> En VM (IaaS) krever at du patcher OS, konfigurerer web-server og håndterer sertifikater. App Service (PaaS) lar deg fokusere på applikasjonskoden — Microsoft tar ansvar for alt under. For NordForm betyr det færre sårbare systemer å holde oppdatert.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>App Service kjører og er tilgjengelig via URL</li>
+        <li>App Service kobler til SQL via Managed Identity (ingen passord)</li>
+        <li>SQL Database er kun tilgjengelig via Private Endpoint</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 21 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">21</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Azure Firewall og sikker internetttrafikk</div>
+        <div class="lab-sub">Azure Firewall · UDR · Application Rules · Network Rules · Forced Tunneling</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az305">AZ-305</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi vil at all trafikk ut av Azure-miljøet vårt går gjennom ett kontrollpunkt der vi kan inspisere og logge alt. Ingen VM skal ha direkte internettilgang», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Deploy Azure Firewall</strong> i Hub-VNet-et (Standard SKU). Firewall-en er nå sentralt kontrollpunkt for all outbound trafikk fra alle spoke-VNet-er.</li>
+        <li><strong>Opprett User Defined Route (UDR)</strong> i alle spoke-subnett: default route (0.0.0.0/0) peker til Firewall-ens private IP. All trafikk tvinges nå via Firewall.</li>
+        <li><strong>Opprett Application Rule</strong> som tillater outbound HTTPS til <code>*.microsoft.com</code> og <code>*.windows.net</code> — nødvendig for Azure-tjenester. Alt annet er blokkert som standard.</li>
+        <li><strong>Aktiver Firewall-logging</strong> til Log Analytics Workspace. Du kan nå se nøyaktig hvilke domener VM-ene prøver å nå — uvurderlig for incident response.</li>
+      </ul>
+
+      <div class="why-box"><strong>Egress kontroll er like viktig som ingress:</strong> De fleste tenker på å blokkere innkommende trafikk. Men malware kommuniserer utover — til command and control-servere. Azure Firewall med application rules lar deg håndheve allowlist for outbound: kun godkjente domener slipper ut. Eksfiltrering av data til ukjente domener blokkeres automatisk.</div>
+
+      <div class="warn-box">⚠️ Azure Firewall koster ca. NOK 1000/dag. Deploy, fullfør lab, slett Firewall. Behold UDR-konfigurasjonen for referanse.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Azure Firewall i Hub-VNet med UDR i alle spoke-subnett</li>
+        <li>VM-er kan kun nå godkjente domener (Application Rule)</li>
+        <li>Firewall-logger strømmer til Log Analytics Workspace</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 22 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">22</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Microsoft Defender for Cloud — CSPM og sikkerhetsscore</div>
+        <div class="lab-sub">Defender for Cloud · Secure Score · CSPM · Recommendations · Regulatory Compliance</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-sc300">SC-300</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Styret vil ha en konkret sikkerhetsscore de kan følge over tid. Og vi trenger å vite om vi møter kravene i NSMs grunnprinsipper», sier CISO.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Aktiver Defender for Cloud</strong> (CSPM gratis tier) på subscription. Se Secure Score — det gir deg en prosentskåre basert på implementerte sikkerhetstiltak.</li>
+        <li><strong>Gå gjennom Recommendations</strong> sortert etter "Max score increase". Implementer de tre øverste anbefalingene og se Secure Score øke. Dette er det mest konkrete bildet du har av hullene i sikkerhetsstillingen.</li>
+        <li><strong>Aktiver Regulatory Compliance-dashboardet</strong> mot ISO 27001 eller CIS Benchmarks. Se hvilke kontroller NordForm allerede oppfyller og hvilke som mangler.</li>
+        <li><strong>Aktiver Defender for Servers Plan 1</strong> på VM-en. Du får nå agentbasert endepunktsbeskyttelse og Just-in-time VM access som alternativ til Bastion for SSH/RDP.</li>
+      </ul>
+
+      <div class="why-box"><strong>CSPM gir deg synlighet, ikke sikkerhet:</strong> Defender for Cloud oppdager misconfigurasjoner og anbefaler tiltak, men håndhever ingenting. Det er en kartleggingsmotor. Verdien er at du systematisk prioriterer tiltak basert på risikopåvirkning — ikke magefølelse.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Secure Score er synlig og minimum tre anbefalinger er implementert</li>
+        <li>Regulatory Compliance dashboard er aktivert</li>
+        <li>Defender for Servers Plan 1 aktivert på VM</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 23 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">23</div>
+      <div class="lab-header-main">
+        <div class="lab-title">ARM Templates og Infrastructure as Code</div>
+        <div class="lab-sub">ARM Templates · Bicep · Idempotency · Template Specs · Deployment Stacks</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Vi har brukt tre uker på å sette opp dette Azure-miljøet manuelt. Hvis vi må gjøre det igjen — for et testmiljø, etter en katastrofe, eller for en ny kunde — tar det like lang tid. Det er ikke akseptabelt», sier IT-sjefen.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Eksporter ARM Template</strong> fra en eksisterende Resource Group. Se på JSON-strukturen — det er deklarativ kode som beskriver den ønskede tilstanden til ressursene.</li>
+        <li><strong>Skriv en enkel Bicep-fil</strong> som deployer en Storage Account. Bicep er Microsofts forenklede syntax som kompileres til ARM JSON. Deploy den to ganger — verifiser at andre kjøring ikke feiler (idempotens).</li>
+        <li><strong>Parameteriser Bicep-filen:</strong> environment-navn og lokasjon som parametere. Nå kan du deploye til test vs. prod ved å endre parameterverdi, ikke koden.</li>
+        <li><strong>Publiser som Template Spec</strong> i Azure. Template Specs lagrer ferdige templates sentralt — teammedlemmer kan deploye standardiserte løsninger uten tilgang til kildekoden.</li>
+      </ul>
+
+      <div class="why-box"><strong>IaC er ikke for utviklere — det er for driftere:</strong> Manuelt konfigurerte miljøer er ikke reproduserbare, ikke versjonert og er en sikkerhetsrisiko (hvem endret hva, når?). Med Bicep/ARM har du historikk i Git, kan rulle tilbake endringer og bevise for revisor at miljøet er konfigurert som dokumentert.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Bicep-fil med parametere deployer Storage Account</li>
+        <li>Andre kjøring av deployment feiler ikke (idempotens verifisert)</li>
+        <li>Template Spec publisert og tilgjengelig i portalen</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 24 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">24</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Zero Trust-gjennomgang og gap-analyse</div>
+        <div class="lab-sub">Zero Trust · NSM Grunnprinsipper · Gap-analyse · Sikkerhetsscore</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-sc300">SC-300</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+          <span class="lab-tag tag-m365">MS-102</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">«Revisor kommer om to måneder. Vi trenger å dokumentere hva vi har på plass, hva vi mangler, og en prioritert plan for å lukke gapene», sier CISO. Dette er ikke en teknisk lab — det er en arkitekturgjennomgang.</div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Kartlegg de seks Zero Trust-pillarene</strong> mot det NordForm har bygget: Identitet (Entra ID, MFA, PIM), Enheter (Intune Compliance), Applikasjoner (App Protection, CA), Data (Sensitivity Labels, DLP), Infrastruktur (Defender for Cloud, Policy), Nettverk (Firewall, NSG, Segmentering).</li>
+        <li><strong>Gjennomgå NSMs 4 kategorier</strong>: Identifisere og kartlegge, Beskytte og opprettholde, Oppdage, Håndtere og gjenopprette. Plasser NordForms kontroller i riktig kategori.</li>
+        <li><strong>Skriv en gap-liste</strong> med prioritet (Kritisk / Høy / Medium): hva mangler, hva er delvis implementert, og hva er på plass. Bruk Microsoft Secure Score og Compliance Manager som input.</li>
+        <li><strong>Lag en 90-dagers plan</strong> for de tre viktigste gapene med konkrete tiltak og eier.</li>
+      </ul>
+
+      <div class="why-box"><strong>Hvorfor denne laben:</strong> AZ-305 tester deg ikke bare på å deploye ressurser — den tester om du forstår helheten og kan begrunne arkitekturvalgene dine. Denne laben er treningen i å tenke som en arkitekt, ikke bare en administrator.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Zero Trust-kartlegging fullført for alle seks pilarer</li>
+        <li>NSM-kategorisering av eksisterende kontroller</li>
+        <li>Gap-liste med prioritering og 90-dagers plan</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- LAB 25 -->
+  <div class="lab-card" onclick="toggle(this)">
+    <div class="lab-header">
+      <div class="lab-num">25</div>
+      <div class="lab-header-main">
+        <div class="lab-title">Avsluttende oppdrag — full incident response-øvelse</div>
+        <div class="lab-sub">Incident Response · SIEM · Forensics · Lockdown · Recovery</div>
+        <div class="lab-tags">
+          <span class="lab-tag tag-sc300">SC-300</span>
+          <span class="lab-tag tag-az305">AZ-305</span>
+          <span class="lab-tag tag-az104">AZ-104</span>
+          <span class="lab-tag tag-m365">MS-102</span>
+        </div>
+      </div>
+      <div class="lab-chevron">▼</div>
+    </div>
+    <div class="lab-body">
+      <div class="section-label">Oppdraget</div>
+      <div class="mission-box">Kl. 08:47 mandag morgen mottar du varsel: Defender for Cloud rapporterer uvanlig outbound trafikk fra VM-en i Stavanger-miljøet. En bruker har logget inn fra Romania midt på natten. Og det mangler en hel mappe med prosjektfiler. <strong>Du har fått i oppdrag å håndtere hendelsen fra A til Å.</strong></div>
+
+      <div class="section-label">Hva du gjør</div>
+      <ul class="steps-list">
+        <li><strong>Containment:</strong> Deaktiver den kompromitterte brukerkontoen umiddelbart i Entra ID. Revoke alle aktive sessions. Isoler VM-en fra nettverket ved å endre NSG til Deny All. Disse tre stegene begrenser skaden mens du etterforsker.</li>
+        <li><strong>Etterforskning:</strong> Bruk Log Analytics til å søke i SecurityEvent og SignInLogs for tidslinje. Hva ble gjort, av hvem, fra hvilken IP, i hvilken periode? Korrelasjonen på tvers av logger er nøkkelen.</li>
+        <li><strong>Omfang:</strong> Sjekk om andre kontoer har logget inn fra samme IP. Sjekk Defender for Cloud Alerts for relaterte hendelser. Har angriperen nådd andre ressurser?</li>
+        <li><strong>Recovery:</strong> Gjenopprett filene fra backup (lab 19). Roter alle hemmeligheter i Key Vault (de kan ha vært eksponert). Oppdater CA-policy for å håndheve Compliant device strengere.</li>
+        <li><strong>Post-incident:</strong> Dokumenter hendelsesforløpet, rotårsak og tiltak som forhindrer gjentakelse. Dette er dokumentasjonen revisor vil be om.</li>
+      </ul>
+
+      <div class="why-box"><strong>Dette er hva alle de 24 labene bygget til:</strong> Hvert enkelt tiltak — PIM, Bastion, Key Vault, Backup, Log Analytics, Conditional Access — er en del av en helhetlig arkitektur som gjør det mulig å oppdage, inneholde og gjenopprette fra en hendelse. Ingen enkeltkomponent er nok alene. Verdien er i helheten.</div>
+
+      <div class="section-label">Akseptansekriterier</div>
+      <ul class="accept-list">
+        <li>Kompromittert konto deaktivert og sessions revokert innen 5 min (simulert)</li>
+        <li>VM isolert fra nettverket</li>
+        <li>KQL-spørring produserer tidslinje for hendelsen</li>
+        <li>Filer gjenopprettet fra backup</li>
+        <li>Hemmeligheter i Key Vault rotert</li>
+        <li>Post-incident rapport skrevet</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-text"><a href="index.html" style="color:inherit;text-decoration:none">← Tilbake til portefølje</a></div>
+  <div class="footer-text">NordForm AS Lab-serie — 25 laber</div>
+</footer>
+
+<script>
+function toggle(card) {
+  card.classList.toggle('open');
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('.lab-card').length;
+  const open = document.querySelectorAll('.lab-card.open').length;
+  // Progress is based on completed (open) labs as a proxy
+  // In a real tracker you'd use checkboxes — here opening = "viewing"
+}
+
+// Progress tracking via localStorage simulation (in-memory)
+const completed = new Set();
+
+document.querySelectorAll('.lab-card').forEach((card, i) => {
+  // Double-click to mark as complete
+  card.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    const num = i + 1;
+    if (completed.has(num)) {
+      completed.delete(num);
+      card.style.borderColor = '';
+      card.querySelector('.lab-num').style.color = '';
+    } else {
+      completed.add(num);
+      card.style.borderColor = 'rgba(45,212,160,0.4)';
+      card.querySelector('.lab-num').style.color = 'var(--green)';
+    }
+    updateBar();
+  });
+});
+
+function updateBar() {
+  const pct = (completed.size / 25) * 100;
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `${completed.size} av 25 laber fullført`;
+}
+
+// Animate bar on load
+setTimeout(() => {
+  document.getElementById('prog-bar').style.width = '0%';
+}, 100);
+</script>
+
+</body>
+</html>
